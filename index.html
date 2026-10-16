@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-root="">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,10 +19,11 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="series-name" href="./">UN Leadership by Country <span>· a fact series</span></a>
+    <a class="series-name" href="./">UN Leadership by Country</a>
     <nav class="site-nav" aria-label="Series">
-      <a href="./" aria-current="page">All parts</a>
-      <a href="part-1-sg-security-council/">Part 1</a>
+      <a href="./" aria-current="page">Home</a>
+      <a href="secretary-general/">Secretary-General</a>
+      <a href="security-council/">Security Council</a>
       <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode">
         <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
         <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
@@ -32,32 +33,40 @@
   </div>
 </header>
 
+<div class="hero-band bg-world">
+  <section class="hero wrap">
+    <p class="eyebrow"><i class="ico huma-un-compound-office" aria-hidden="true"></i>A fact series</p>
+    <h1>Who leads the United Nations?</h1>
+    <p class="dek">A country-by-country look at who holds the top leadership positions in the UN system, from the Secretary-General and the Security Council to the heads of the largest UN agencies, funds and programmes. Each topic is built from public records and comes with open data you can download.</p>
+  </section>
+</div>
+
 <main>
   <div class="wrap">
-    <section class="hero">
-      <p class="eyebrow">A fact series</p>
-      <h1>Who leads the United Nations?</h1>
-      <p class="dek">A country-by-country look at who has held the top leadership positions in the UN system, from the Secretary-General and the Security Council to the heads of the largest UN agencies, funds and programmes. Each part is built from public UN records and comes with open data you can download.</p>
-    </section>
-
-    <div class="parts">
-      <a class="part" href="part-1-sg-security-council/">
-        <span class="num"><i class="ico huma-leadership" aria-hidden="true"></i> Part 1</span>
-        <h2>The Secretary-General and the Security Council</h2>
-        <p>Nine Secretaries-General from nine countries, every elected term on the Council since 1946, the 58 Member States never elected, and the 2026 selection now under way.</p>
-        <span class="status">Published · data as of 16 October 2026</span>
+    <div class="parts" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:28px">
+      <a class="part" href="secretary-general/">
+        <span class="num"><i class="ico huma-leadership" aria-hidden="true"></i> Secretary-General</span>
+        <h2>Who leads the UN Secretariat?</h2>
+        <p>The 2026 race with straw poll results over time, and the nine Secretaries-General since 1946 by country and region.</p>
+        <span class="status"><span class="pill live">Race in progress</span></span>
+      </a>
+      <a class="part" href="security-council/">
+        <span class="num"><i class="ico huma-meeting" aria-hidden="true"></i> Security Council</span>
+        <h2>Who sits on the Security Council?</h2>
+        <p>The 15 seats around the table in 2026 and 2027, every elected term since 1946, and the 58 Member States never elected.</p>
+        <span class="status">Data as of 16 October 2026</span>
       </a>
       <div class="part upcoming">
-        <span class="num"><i class="ico huma-un-compound-office" aria-hidden="true"></i> Part 2</span>
-        <h2>Heads of the leading UN agencies, funds and programmes</h2>
-        <p>Which countries have provided the executive heads of the largest UN entities, and how that has changed over time.</p>
-        <span class="status">In preparation</span>
+        <span class="num"><i class="ico huma-un-compound-office" aria-hidden="true"></i> UN agencies</span>
+        <h2>Who heads the UN agencies?</h2>
+        <p>Which countries have provided the executive heads of the largest UN agencies, funds and programmes.</p>
+        <span class="status">Coming soon</span>
       </div>
     </div>
 
     <div class="card notes">
       <h3><i class="ico huma-information-management" aria-hidden="true"></i>About the series</h3>
-      <p>Every figure links back to its source, and the underlying data sits in plain CSV files in the project's <a href="https://github.com/mdfazlulkarim/un-leadership-by-country">GitHub repository</a>, so it can be checked, reused and corrected. Each part adds to a shared country profile, so over time a single lookup shows a country's full record across the UN system.</p>
+      <p>Every figure links back to its source, and the underlying data sits in plain CSV files in the project's <a href="https://github.com/mdfazlulkarim/un-leadership-by-country">GitHub repository</a>, so it can be checked, reused and corrected. Each topic adds to a shared country profile, so over time a single lookup will show a country's full record across the UN system.</p>
     </div>
   </div>
 </main>

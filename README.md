@@ -4,28 +4,32 @@ A fact series on which countries have held the top leadership positions in the U
 
 **Live site:** https://mdfazlulkarim.github.io/un-leadership-by-country/
 
-| Part | Topic | Status |
+| Topic | Page | Status |
 |---|---|---|
-| 1 | [The Secretary-General and the Security Council](https://mdfazlulkarim.github.io/un-leadership-by-country/part-1-sg-security-council/) | Published, data as of 16 October 2026 |
-| 2 | Heads of the leading UN agencies, funds and programmes | In preparation |
+| Secretary-General | [secretary-general/](https://mdfazlulkarim.github.io/un-leadership-by-country/secretary-general/) | Published, data as of 16 October 2026 |
+| Security Council | [security-council/](https://mdfazlulkarim.github.io/un-leadership-by-country/security-council/) | Published, data as of 16 October 2026 |
+| Heads of UN agencies | | Coming soon |
 
 This is an independent personal project. It is not an official United Nations publication and does not represent the views of the United Nations or any of its entities.
 
-## What Part 1 covers
+## What the pages cover
 
-- All nine Secretaries-General, with country, regional group and years in office
-- The 2026 Secretary-General selection: candidates, nationality and nominating State
-- Every elected term on the Security Council since 1946, including the members elected for 2027-2028
-- The 58 Member States never elected to the Council, by regional group
-- A world map of elected terms and a country lookup
+**Secretary-General:** the 2026 selection first (next step, key dates, candidates ranked by the latest straw poll, and straw poll results over time), then all nine Secretaries-General with profiles and links to their official UN pages, a breakdown by regional group and a regional groups map.
+
+**Security Council:** the 15 seats around the table in 2026 and 2027, the most frequently elected members, the 58 Member States never elected, a world map of elected terms, a country lookup and the full table.
 
 ## Repository structure
 
 ```
-index.html                         series landing page
-part-1-sg-security-council/        Part 1 page
+index.html                         home page
+secretary-general/                 Secretary-General page
+security-council/                  Security Council page
+part-1-sg-security-council/        redirect from the original address
 assets/css/style.css               shared styles (light and dark mode)
-assets/js/part1.js                 charts, map and lookup for Part 1
+assets/js/common.js                shared helpers: data, flags, tooltips, charts, pop-ups, regional groups map
+assets/js/sg.js                    Secretary-General page
+assets/js/sc.js                    Security Council page
+assets/img/                        header background illustrations
 assets/js/site.js                  light and dark theme switch (light by default)
 assets/flags/                      country flags (SVG)
 assets/vendor/                     D3, topojson-client, the world map and the OCHA icon font (see THIRD_PARTY.txt)
@@ -38,9 +42,11 @@ data/                              the data behind every figure
 |---|---|---|
 | `data/countries.csv` | UN Member State (193) and former Member State (4) | ISO codes, regional group, Council status, elected terms, years, Secretary-General, 2026 candidate |
 | `data/security_council_terms.csv` | elected term (1946 to 2028) | member state, regional group, start and end year, notes on one-year and split terms |
-| `data/secretaries_general.csv` | Secretary-General | country, regional group, start and end dates, notes |
-| `data/sg_selection_2026.csv` | 2026 candidate | nationality, nominating State, nomination date |
-| `data/meta.json` | | as-of date and the status line for the 2026 selection |
+| `data/secretaries_general.csv` | Secretary-General | country, regional group, start and end dates, notes, official UN page, optional photo with credit and licence |
+| `data/sg_selection_2026.csv` | 2026 candidate | display name, nationality, nominating State, nomination date, status |
+| `data/sg_straw_polls_2026.csv` | candidate in each straw poll | encourage, discourage, no opinion, source (unofficial, as reported by PassBlue and GWL Voices) |
+| `data/sg_selection_dates.csv` | key date | event, status (done, next, upcoming), notes |
+| `data/meta.json` | | as-of date |
 
 The page reads these files directly, so editing a CSV on GitHub updates the site. If you add or change a term in `security_council_terms.csv`, update the matching totals in `countries.csv` too.
 

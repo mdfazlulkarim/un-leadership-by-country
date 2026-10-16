@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Security Council | UN Leadership by Country</title>
+<meta name="description" content="Who sits on the UN Security Council, how the 15 seats are shared, and every country's record of elected terms since 1946.">
+<meta property="og:title" content="Who sits on the UN Security Council, and who never has">
+<meta property="og:description" content="The 15 seats around the table in 2026 and 2027, every elected term since 1946, and the 58 Member States never elected.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23009edb'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M8 16h16M16 8c-4 4-4 12 0 16M16 8c4 4 4 12 0 16' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
+<script>(function(){var t="light";try{t=localStorage.getItem("unlbc-theme")==="dark"?"dark":"light";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="stylesheet" href="../assets/vendor/ocha-icons/icons.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+<div class="notice-bar" role="note">
+  <div class="wrap"><i class="ico huma-about" aria-hidden="true"></i><span><strong>Independent personal project.</strong> This is not a United Nations product and is not endorsed by the United Nations.</span></div>
+</div>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="series-name" href="../">UN Leadership by Country</a>
+    <nav class="site-nav" aria-label="Topics">
+      <a href="../">Home</a>
+      <a href="../secretary-general/">Secretary-General</a>
+      <a href="./" aria-current="page">Security Council</a>
+      <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
+        <span class="tt-text">Light</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero-band bg-council">
+  <section class="hero wrap">
+    <p class="eyebrow"><i class="ico huma-meeting" aria-hidden="true"></i>Security Council</p>
+    <h1>Who sits on the Security Council?</h1>
+    <p class="dek">Fifteen seats decide on international peace and security. See who holds them now and from January 2027, how the seats are shared between regions, and which countries have, and have never, been elected since 1946.</p>
+    <p class="asof">Data as of <strong data-asof>16 October 2026</strong> · <a href="#sources">Sources and method</a></p>
+  </section>
+</div>
+
+<main>
+  <div class="wrap">
+    <section class="block" style="padding-top:28px">
+      <div class="tiles" id="tiles">
+        <div class="tile"><i class="ico huma-meeting" aria-hidden="true"></i><div><div class="value">15</div><div class="label">seats: 5 permanent members with veto and 10 elected for two years</div></div></div>
+        <div class="tile"><i class="ico huma-country" aria-hidden="true"></i><div><div class="value" id="t-elected">129</div><div class="label">Member States elected to the Council at least once</div></div></div>
+        <div class="tile"><i class="ico huma-group" aria-hidden="true"></i><div><div class="value" id="t-never">58</div><div class="label">Member States never elected to the Council</div></div></div>
+        <div class="tile"><i class="ico huma-top-ranking" aria-hidden="true"></i><div><div class="value" id="t-top">12</div><div class="label" id="t-top-label">elected terms for Japan, the most of any country</div></div></div>
+      </div>
+    </section>
+
+    <!-- ============================================================ AROUND THE TABLE -->
+    <section class="block" id="table" aria-labelledby="table-title" style="padding-top:16px">
+      <div class="card">
+        <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+          <h3 id="table-title" style="margin:0"><i class="ico huma-coordination" aria-hidden="true"></i>Around the table</h3>
+          <div class="seg" id="year-switch" role="group" aria-label="Choose year">
+            <button type="button" data-year="2026" aria-pressed="true">2026</button>
+            <button type="button" data-year="2027" aria-pressed="false">2027</button>
+          </div>
+        </div>
+        <p class="sub" style="margin-top:8px">The 15 seats, grouped as they are shared out: five permanent seats, and ten elected seats allocated by regional group under General Assembly resolution 1991 A (XVIII) of 1963. Switch to 2027 to see the five members joining on 1 January.</p>
+        <div class="horseshoe-wrap">
+          <div class="horseshoe" id="horseshoe"><p class="loading">Loading…</p></div>
+          <div>
+            <ul class="seat-key" id="seat-key"></ul>
+            <div class="btn-row"><button type="button" class="btn" data-open-regions><i class="ico huma-map" aria-hidden="true"></i>What are the regional groups?</button></div>
+          </div>
+        </div>
+        <p class="card-note">Seats are grouped by regional group for clarity, not by where delegations sit in the chamber. By convention, one elected seat for an Arab State alternates between the African and Asia-Pacific groups.</p>
+      </div>
+    </section>
+
+    <!-- ============================================================ HISTORY -->
+    <section class="block" id="history" aria-labelledby="hist-title">
+      <div class="section-head">
+        <p class="eyebrow">Since 1946</p>
+        <h2 id="hist-title"><i class="ico huma-meeting" aria-hidden="true"></i>Who has served</h2>
+        <p class="lede">The General Assembly elects five members each year, by secret ballot and a two-thirds majority. A retiring member cannot be re-elected immediately (Article 23). Until 1965 the Council had 11 members, six of them elected.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3><i class="ico huma-top-ranking" aria-hidden="true"></i>Most frequently elected</h3>
+          <p class="sub">Elected members with six or more terms since 1946. Hover or focus a bar for the years.</p>
+          <div class="chart" id="sc-top" role="img" aria-label="Member States with the most elected terms on the Security Council"><p class="loading">Loading chart…</p></div>
+          <p class="card-note">Terms include one-year and split terms. Japan has also spent the most years on the Council of any elected member.</p>
+        </div>
+        <div class="card">
+          <h3><i class="ico huma-group" aria-hidden="true"></i>Never elected, by regional group</h3>
+          <p class="sub">Member States that have never been elected, out of each group's total membership.</p>
+          <div class="chart" id="sc-never" role="img" aria-label="Member States never elected to the Security Council, by regional group"><p class="loading">Loading chart…</p></div>
+          <div class="btn-row"><button type="button" class="btn" data-open-regions="Asia-Pacific States"><i class="ico huma-map" aria-hidden="true"></i>See the groups on a map</button></div>
+          <p class="card-note">Group totals include the permanent members. Saudi Arabia, elected in 2013 but which declined the seat, is not counted as never elected.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="ico huma-country" aria-hidden="true"></i>Elected terms by country, 1946 to 2028</h3>
+        <p class="sub">Number of elected terms on the Security Council, including terms already confirmed for 2027 and 2028. Select a country to see its full record below.</p>
+        <div class="legend" id="map-legend" aria-hidden="true"></div>
+        <div class="map-wrap chart" id="sc-map" role="img" aria-label="World map of elected Security Council terms by country"><p class="loading">Loading map…</p></div>
+        <p class="card-note">Boundaries and names on this map come from Natural Earth and do not imply any endorsement or acceptance. Small island states may be too small to see; every Member State is in the country lookup and the full table.</p>
+      </div>
+
+      <div class="card" id="lookup">
+        <h3><i class="ico huma-search" aria-hidden="true"></i>Country lookup</h3>
+        <form class="lookup-form" id="lookup-form" autocomplete="off">
+          <label for="lookup-input">Find a Member State</label>
+          <input id="lookup-input" list="country-list" placeholder="Start typing, for example Sudan" aria-describedby="lookup-help">
+          <datalist id="country-list"></datalist>
+        </form>
+        <p class="card-note" id="lookup-help">Shows the country's Security Council record, any Secretary-General it has provided, and any 2026 candidate of its nationality.</p>
+        <div class="profile" id="profile" aria-live="polite"></div>
+      </div>
+
+      <div class="facts" id="sc-facts">
+        <div class="fact"><i class="ico huma-top-ranking" aria-hidden="true"></i><div><h4>Japan leads the elected members</h4><p>Japan has been elected 12 times (24 years on the Council), followed by Brazil with 11 terms and Argentina with nine.</p></div></div>
+        <div class="fact"><i class="ico huma-map" aria-hidden="true"></i><div><h4>Nearly half of Asia-Pacific has never served</h4><p>26 of the 58 never-elected Member States are in the Asia-Pacific group, many of them small island states.</p></div></div>
+        <div class="fact"><i class="ico huma-trending" aria-hidden="true"></i><div><h4>First-timers</h4><p>Latvia took its first seat in January 2026. Kyrgyzstan takes its first seat in January 2027.</p></div></div>
+        <div class="fact"><i class="ico huma-policy" aria-hidden="true"></i><div><h4>The seat that was declined</h4><p>Saudi Arabia was elected in October 2013 but declined to take its seat. Jordan was elected in its place for 2014 to 2015.</p></div></div>
+        <div class="fact"><i class="ico huma-partnership" aria-hidden="true"></i><div><h4>Six shared terms</h4><p>When no candidate could win, rivals split a two-year term between them six times, most recently Italy (2017) and the Netherlands (2018).</p></div></div>
+        <div class="fact"><i class="ico huma-country" aria-hidden="true"></i><div><h4>Home countries of Secretaries-General return</h4><p>Austria and Portugal, home countries of Kurt Waldheim and António Guterres, both join the Council in 2027 for a fourth term.</p></div></div>
+        <div class="fact"><i class="ico huma-government-office" aria-hidden="true"></i><div><h4>China's seat changed hands</h4><p>The Republic of China held the seat until 25 October 1971, when General Assembly resolution 2758 (XXVI) recognised the People's Republic of China.</p></div></div>
+        <div class="fact"><i class="ico huma-government-office" aria-hidden="true"></i><div><h4>Russia continued the Soviet seat</h4><p>The Russian Federation took over the seat of the Union of Soviet Socialist Republics in December 1991.</p></div></div>
+      </div>
+
+      <div class="card">
+        <details id="full-table">
+          <summary>Full table: all Member States and former Member States</summary>
+          <div class="table-scroll">
+            <table id="country-table">
+              <thead><tr>
+                <th><button data-sort="member_state">Member State</button></th>
+                <th><button data-sort="regional_group">Regional group</button></th>
+                <th><button data-sort="status">Status</button></th>
+                <th class="num"><button data-sort="elected_terms">Elected terms</button></th>
+                <th class="num"><button data-sort="years_elected">Years</button></th>
+                <th class="num"><button data-sort="latest_term_end">Latest term ends</button></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============================================================ SOURCES -->
+    <section class="block" id="sources" aria-labelledby="src-title">
+      <div class="section-head">
+        <h2 id="src-title"><i class="ico huma-document" aria-hidden="true"></i>Sources, method and data</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card notes">
+          <h3><i class="ico huma-link" aria-hidden="true"></i>Sources</h3>
+          <ul>
+            <li>United Nations Security Council, <a href="https://main.un.org/securitycouncil/en/content/countries-elected-members">Countries Elected Members</a>, <a href="https://main.un.org/securitycouncil/en/content/countries-never-elected-members-security-council">Countries Never Elected Members</a> and <a href="https://main.un.org/securitycouncil/en/content/current-members">Current Members</a>.</li>
+            <li><a href="https://www.un.org/en/about-us/un-charter/full-text">Charter of the United Nations</a>, Article 23.</li>
+            <li>UN Geneva, <a href="https://www.ungeneva.org/en/news-media/news/2025/06/106978/five-countries-elected-serve-un-security-council">Five countries elected to serve on UN Security Council</a> (June 2025), and UN Photo, <a href="https://media.un.org/photo/en/asset/oun7/oun71140503">election of members for 2027-2028</a> (June 2026).</li>
+            <li>Loraine Sievers and Sam Daws, <a href="https://www.scprocedure.org/chapter-3-section-3k">The Procedure of the UN Security Council</a>, for regional group totals.</li>
+            <li>Map: <a href="https://github.com/topojson/world-atlas">world-atlas</a>, derived from Natural Earth.</li>
+          </ul>
+        </div>
+        <div class="card notes">
+          <h3><i class="ico huma-information-management" aria-hidden="true"></i>Method notes</h3>
+          <ul>
+            <li>A <strong>term</strong> is each elected period listed by the UN, including one-year terms (1946 and 1966) and split terms, where two countries shared a two-year term.</li>
+            <li><strong>Former Member States</strong> (Czechoslovakia, the German Democratic Republic, the United Arab Republic and Yugoslavia) are listed separately, as the UN does. Terms served as Zaire, Ceylon, Upper Volta and the Byelorussian and Ukrainian Soviet Socialist Republics are counted under today's names.</li>
+            <li>The German Democratic Republic's 1980-1981 term is not shown on the UN's elected members page and has been added.</li>
+            <li>Terms for 2027-2028 are included because the members were elected in June 2026.</li>
+            <li>Regional group totals follow current membership (193 Member States).</li>
+          </ul>
+          <h3 style="margin-top:14px"><i class="ico huma-csv-file" aria-hidden="true"></i>Download the data</h3>
+          <ul class="downloads">
+            <li><a href="../data/countries.csv" download>countries.csv</a></li>
+            <li><a href="../data/security_council_terms.csv" download>security_council_terms.csv</a></li>
+          </ul>
+          <p class="card-note">Spotted an error? Open an issue on the project's GitHub repository.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p><strong>UN Leadership by Country</strong> is an independent personal project. It is not an official United Nations publication and does not represent the views of the United Nations or any of its entities.</p>
+    <p>Compiled from public UN sources. Data and text: CC BY 4.0. Code: MIT licence. Icons: <a href="https://www.unocha.org/">OCHA</a> Humanitarian Icons (public domain). Flags: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (MIT).</p>
+  </div>
+</footer>
+
+<div class="tooltip" id="tooltip" role="status"></div>
+<script src="../assets/vendor/d3.min.js"></script>
+<script src="../assets/vendor/topojson-client.min.js"></script>
+<script src="../assets/js/site.js"></script>
+<script src="../assets/js/common.js"></script>
+<script src="../assets/js/sc.js"></script>
+</body>
+</html>
