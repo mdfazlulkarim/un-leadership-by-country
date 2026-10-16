@@ -250,8 +250,8 @@ a.part:hover { border-color: var(--link); }
 @media (max-width: 860px) { .parts { grid-template-columns: minmax(0, 1fr) !important; } }
 
 /* footer */
-.site-footer { margin-top: 48px; padding: 28px 0 40px; border-top: 1px solid var(--border); background: var(--surface-1); font-size: 14px; color: var(--text-muted); }
-.site-footer p { margin: 0 0 8px; max-width: 80ch; }
+.site-footer { margin-top: 48px; padding: 18px 0 20px; border-top: 1px solid var(--border); background: var(--surface-1); font-size: 13px; line-height: 1.5; color: var(--text-muted); }
+.site-footer p { margin: 0 0 4px; }
 
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .loading { color: var(--text-muted); font-size: 14px; }
