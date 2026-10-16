@@ -8,9 +8,14 @@
 <meta property="og:title" content="UN Leadership by Country">
 <meta property="og:description" content="A fact series on which countries have held the top leadership positions in the United Nations system.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23009edb'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M8 16h16M16 8c-4 4-4 12 0 16M16 8c4 4 4 12 0 16' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
+<script>(function(){var t="light";try{t=localStorage.getItem("unlbc-theme")==="dark"?"dark":"light";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
+<link rel="stylesheet" href="assets/vendor/ocha-icons/icons.css">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<div class="notice-bar" role="note">
+  <div class="wrap"><i class="ico huma-about" aria-hidden="true"></i><span><strong>Independent personal project.</strong> This is not a United Nations product and is not endorsed by the United Nations.</span></div>
+</div>
 
 <header class="site-header">
   <div class="wrap">
@@ -18,6 +23,11 @@
     <nav class="site-nav" aria-label="Series">
       <a href="./" aria-current="page">All parts</a>
       <a href="part-1-sg-security-council/">Part 1</a>
+      <button type="button" class="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11z"/></svg>
+        <span class="tt-text">Light</span>
+      </button>
     </nav>
   </div>
 </header>
@@ -32,13 +42,13 @@
 
     <div class="parts">
       <a class="part" href="part-1-sg-security-council/">
-        <span class="num">Part 1</span>
+        <span class="num"><i class="ico huma-leadership" aria-hidden="true"></i> Part 1</span>
         <h2>The Secretary-General and the Security Council</h2>
         <p>Nine Secretaries-General from nine countries, every elected term on the Council since 1946, the 58 Member States never elected, and the 2026 selection now under way.</p>
         <span class="status">Published · data as of 16 October 2026</span>
       </a>
       <div class="part upcoming">
-        <span class="num">Part 2</span>
+        <span class="num"><i class="ico huma-un-compound-office" aria-hidden="true"></i> Part 2</span>
         <h2>Heads of the leading UN agencies, funds and programmes</h2>
         <p>Which countries have provided the executive heads of the largest UN entities, and how that has changed over time.</p>
         <span class="status">In preparation</span>
@@ -46,7 +56,7 @@
     </div>
 
     <div class="card notes">
-      <h3>About the series</h3>
+      <h3><i class="ico huma-information-management" aria-hidden="true"></i>About the series</h3>
       <p>Every figure links back to its source, and the underlying data sits in plain CSV files in the project's <a href="https://github.com/mdfazlulkarim/un-leadership-by-country">GitHub repository</a>, so it can be checked, reused and corrected. Each part adds to a shared country profile, so over time a single lookup shows a country's full record across the UN system.</p>
     </div>
   </div>
@@ -55,8 +65,9 @@
 <footer class="site-footer">
   <div class="wrap">
     <p><strong>UN Leadership by Country</strong> is an independent personal project. It is not an official United Nations publication and does not represent the views of the United Nations or any of its entities.</p>
-    <p>Compiled from public UN sources. Data and text: CC BY 4.0. Code: MIT licence.</p>
+    <p>Compiled from public UN sources. Data and text: CC BY 4.0. Code: MIT licence. Icons: <a href="https://www.unocha.org/">OCHA</a> Humanitarian Icons (public domain). Flags: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (MIT).</p>
   </div>
 </footer>
+<script src="assets/js/site.js"></script>
 </body>
 </html>

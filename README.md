@@ -26,7 +26,9 @@ index.html                         series landing page
 part-1-sg-security-council/        Part 1 page
 assets/css/style.css               shared styles (light and dark mode)
 assets/js/part1.js                 charts, map and lookup for Part 1
-assets/vendor/                     D3, topojson-client and the world map (see THIRD_PARTY.txt)
+assets/js/site.js                  light and dark theme switch (light by default)
+assets/flags/                      country flags (SVG)
+assets/vendor/                     D3, topojson-client, the world map and the OCHA icon font (see THIRD_PARTY.txt)
 data/                              the data behind every figure
 ```
 
@@ -34,7 +36,7 @@ data/                              the data behind every figure
 
 | File | One row per | Key columns |
 |---|---|---|
-| `data/countries.csv` | UN Member State (193) and former Member State (4) | regional group, Council status, elected terms, years, Secretary-General, 2026 candidate |
+| `data/countries.csv` | UN Member State (193) and former Member State (4) | ISO codes, regional group, Council status, elected terms, years, Secretary-General, 2026 candidate |
 | `data/security_council_terms.csv` | elected term (1946 to 2028) | member state, regional group, start and end year, notes on one-year and split terms |
 | `data/secretaries_general.csv` | Secretary-General | country, regional group, start and end dates, notes |
 | `data/sg_selection_2026.csv` | 2026 candidate | nationality, nominating State, nomination date |
@@ -79,4 +81,4 @@ Spotted an error? Please open an issue with the source for the correct figure.
 
 ## Licence
 
-Code: MIT (see `LICENSE`). Data and text: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Third-party files in `assets/vendor/` keep their own licences.
+Code: MIT (see `LICENSE`). Data and text: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Icons are the OCHA Humanitarian Icons (public domain). Flags are from flag-icons (MIT). Third-party files in `assets/vendor/` and `assets/flags/` keep their own licences. The UN emblem is not used, as its use is reserved for the United Nations.

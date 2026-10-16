@@ -63,6 +63,28 @@
   var fmtDate = d3.timeFormat("%-d %B %Y");
   var parseDate = d3.timeParse("%Y-%m-%d");
 
+  var FLAGS = "../assets/flags/";
+  var iso2By = {};
+  function flag(name, cls) {
+    var code = iso2By[name];
+    var c = "flag" + (cls ? " " + cls : "");
+    if (!code) return el("span", { "class": c, "aria-hidden": "true" });
+    return el("img", { "class": c, src: FLAGS + code + ".svg", alt: "", loading: "lazy", decoding: "async" });
+  }
+  function withFlag(name, text, cls) {
+    var f = document.createDocumentFragment();
+    f.appendChild(flag(name, cls)); f.appendChild(document.createTextNode(text == null ? name : text));
+    return f;
+  }
+  function svgFlag(sel, nameFn, x, y) {
+    sel.filter(function (d) { return iso2By[nameFn(d)]; }).each(function (d) {
+      var g = d3.select(this);
+      g.append("image").attr("href", FLAGS + iso2By[nameFn(d)] + ".svg").attr("x", x).attr("y", y)
+        .attr("width", 20).attr("height", 15).attr("preserveAspectRatio", "xMidYMid slice").style("pointer-events", "none");
+      g.append("rect").attr("class", "flag-ring").attr("x", x).attr("y", y).attr("width", 20).attr("height", 15).attr("rx", 1.5).style("pointer-events", "none");
+    });
+  }
+
   function el(tag, attrs, text) {
     var e = document.createElement(tag);
     if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
@@ -73,7 +95,12 @@
   /* ------------------------------------------------------------------ tooltip */
   function showTip(evt, lines, anchorEl) {
     tip.replaceChildren();
-    lines.forEach(function (l) { tip.appendChild(el("div", { "class": l.cls || "tt-label" }, l.text)); });
+    lines.forEach(function (l) {
+      var d = el("div", { "class": l.cls || "tt-label" });
+      if (l.flag) d.appendChild(flag(l.flag));
+      d.appendChild(document.createTextNode(l.text));
+      tip.appendChild(d);
+    });
     tip.classList.add("show");
     var x, y;
     if (evt && evt.pageX != null && evt.type !== "focus") { x = evt.pageX; y = evt.pageY; }
@@ -109,7 +136,8 @@
     var g = svg.append("g").attr("transform", "translate(" + labelW + "," + top + ")");
     g.append("line").attr("class", "gridline").attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", rows.length * rowH).style("stroke", "var(--baseline)");
     var row = g.selectAll("g.r").data(rows).join("g").attr("class", "r").attr("transform", function (d, i) { return "translate(0," + i * rowH + ")"; });
-    row.append("text").attr("class", "row-label").attr("x", -10).attr("y", rowH / 2).attr("dy", "0.35em").attr("text-anchor", "end").text(opts.label);
+    row.append("text").attr("class", "row-label").attr("x", opts.flag ? -36 : -10).attr("y", rowH / 2).attr("dy", "0.35em").attr("text-anchor", "end").text(opts.label);
+    if (opts.flag) svgFlag(row, opts.flag, -30, rowH / 2 - 7.5);
     var hit = row.append("rect").attr("class", "hit").attr("x", -labelW).attr("y", 0).attr("width", width).attr("height", rowH)
       .attr("aria-label", function (d) { return opts.label(d) + ": " + opts.valueText(d); });
     row.append("path").attr("class", "bar").attr("d", function (d) {
@@ -127,7 +155,7 @@
     node.replaceChildren();
     var width = Math.max(300, node.clientWidth);
     var narrow = width < 560;
-    var labelW = narrow ? 132 : 220, valueW = narrow ? 52 : 74, rowH = 42, barH = 14, top = 6, axisH = 26;
+    var labelW = narrow ? 156 : 246, valueW = narrow ? 52 : 74, rowH = 42, barH = 14, top = 6, axisH = 26;
     var height = sgs.length * rowH + top + axisH;
     var x = d3.scaleTime().domain([new Date(1945, 6, 1), new Date(2027, 6, 1)]).range([0, width - labelW - valueW]);
     var svg = d3.select(node).append("svg").attr("width", width).attr("height", height).attr("aria-hidden", "true");
@@ -138,9 +166,10 @@
     g.selectAll("text.tick").data(ticks).join("text").attr("class", "axis").attr("x", x).attr("y", sgs.length * rowH + 18)
       .attr("text-anchor", "middle").style("fill", "var(--axis)").style("font-size", "12px").text(d3.timeFormat("%Y"));
     var row = g.selectAll("g.r").data(sgs).join("g").attr("class", "r").attr("transform", function (d, i) { return "translate(0," + i * rowH + ")"; });
-    row.append("text").attr("class", "row-label").attr("x", -12).attr("y", rowH / 2 - 7).attr("dy", "0.35em").attr("text-anchor", "end")
+    svgFlag(row, function (d) { return d.country; }, -32, rowH / 2 - 7.5);
+    row.append("text").attr("class", "row-label").attr("x", -40).attr("y", rowH / 2 - 7).attr("dy", "0.35em").attr("text-anchor", "end")
       .style("font-weight", 600).style("font-size", narrow ? "13px" : "14px").text(function (d) { return d.name; });
-    row.append("text").attr("class", "row-sub").attr("x", -12).attr("y", rowH / 2 + 9).attr("dy", "0.35em").attr("text-anchor", "end").text(function (d) { return short(d.country); });
+    row.append("text").attr("class", "row-sub").attr("x", -40).attr("y", rowH / 2 + 9).attr("dy", "0.35em").attr("text-anchor", "end").text(function (d) { return short(d.country); });
     var hit = row.append("rect").attr("class", "hit").attr("x", -labelW).attr("y", 0).attr("width", width).attr("height", rowH)
       .attr("aria-label", function (d) { return d.name + ", " + d.country + ", " + fmtDate(d.start) + " to " + fmtDate(d.end); });
     row.append("rect").attr("class", "bar").attr("x", function (d) { return x(d.start); }).attr("y", (rowH - barH) / 2)
@@ -150,7 +179,7 @@
     bindTip(hit, function (d) {
       return [
         { text: d.name, cls: "tt-value" },
-        { text: d.country + " · " + d.regional_group },
+        { text: d.country + " · " + d.regional_group, flag: d.country },
         { text: fmtDate(d.start) + " to " + fmtDate(d.end) + (d.status === "Serving" ? " (serving)" : "") },
         { text: d.note, cls: "tt-detail" }
       ].filter(function (l) { return l.text; });
@@ -232,7 +261,7 @@
     return "Elected " + (t === 1 ? "once" : t + " times") + ", " + r.years_elected + " year" + (+r.years_elected === 1 ? "" : "s") + " on the Council";
   }
   function profileLines(r) {
-    var lines = [{ text: short(r.member_state), cls: "tt-value" }, { text: councilSummary(r) }];
+    var lines = [{ text: short(r.member_state), cls: "tt-value", flag: r.member_state }, { text: councilSummary(r) }];
     var ts = termsBy[r.member_state] || [];
     if (ts.length) lines.push({ text: "Terms: " + ts.map(function (t) { return range(t.term_start, t.term_end); }).join(", "), cls: "tt-detail" });
     if (r.secretary_general) lines.push({ text: "Secretary-General: " + r.secretary_general, cls: "tt-detail" });
@@ -243,7 +272,7 @@
     p.replaceChildren();
     if (!r) { p.classList.remove("show"); return; }
     p.classList.add("show");
-    p.appendChild(el("h3", null, r.member_state));
+    var h = el("h3"); h.appendChild(withFlag(r.member_state, r.member_state, "lg")); p.appendChild(h);
     var meta = el("p", { "class": "meta" });
     meta.appendChild(el("span", { "class": "badge" }, r.status));
     meta.appendChild(document.createTextNode(r.regional_group));
@@ -278,7 +307,7 @@
     tb.replaceChildren();
     sorted.forEach(function (r) {
       var tr = el("tr");
-      tr.appendChild(el("td", null, r.member_state));
+      var td0 = el("td"); td0.appendChild(withFlag(r.member_state)); tr.appendChild(td0);
       tr.appendChild(el("td", null, GROUP_SHORT[r.regional_group]));
       tr.appendChild(el("td", null, r.status));
       var perm = r.status === "Permanent member";
@@ -318,7 +347,7 @@
 
     var current = countries.filter(function (r) { return r.status !== "Former Member State"; });
     var byName = {}, byNum = {};
-    countries.forEach(function (r) { byName[r.member_state] = r; if (r.iso_numeric) byNum[r.iso_numeric] = r; });
+    countries.forEach(function (r) { byName[r.member_state] = r; if (r.iso_numeric) byNum[r.iso_numeric] = r; if (r.iso2) iso2By[r.member_state] = r.iso2; });
 
     // tiles
     var nCountriesSG = new Set(sgs.map(function (d) { return d.country; })).size;
@@ -335,7 +364,7 @@
       var tr = el("tr");
       tr.appendChild(el("td", { "class": "num" }, d.order));
       tr.appendChild(el("td", null, d.name));
-      tr.appendChild(el("td", null, d.country));
+      var tdc = el("td"); tdc.appendChild(withFlag(d.country)); tr.appendChild(tdc);
       tr.appendChild(el("td", null, d.start.getFullYear() + "–" + d.end.getFullYear()));
       sgtb.appendChild(tr);
     });
@@ -351,9 +380,9 @@
     cands.forEach(function (c) {
       var tr = el("tr");
       tr.appendChild(el("td", null, c.candidate));
-      tr.appendChild(el("td", null, c.nationality));
+      var tdn = el("td"); tdn.appendChild(withFlag(c.nationality)); tr.appendChild(tdn);
       tr.appendChild(el("td", null, GROUP_SHORT[c.regional_group]));
-      tr.appendChild(el("td", null, c.nominated_by));
+      var tdb = el("td"); tdb.appendChild(withFlag(c.nominated_by)); tr.appendChild(tdb);
       tr.appendChild(el("td", null, fmtDate(parseDate(c.nomination_date))));
       ctb.appendChild(tr);
     });
@@ -376,15 +405,15 @@
     // chips
     var p5 = current.filter(function (r) { return r.status === "Permanent member"; });
     var p5c = document.getElementById("p5-chips");
-    p5.forEach(function (r) { p5c.appendChild(el("li", { "class": "chip perm" }, short(r.member_state))); });
+    p5.forEach(function (r) { var li = el("li", { "class": "chip perm" }); li.appendChild(withFlag(r.member_state, short(r.member_state))); p5c.appendChild(li); });
     var now = current.filter(function (r) { return r.on_council_2026 === "yes" && r.status !== "Permanent member"; })
       .map(function (r) { return { r: r, end: (termsBy[r.member_state] || []).filter(function (t) { return +t.term_start <= 2026 && +t.term_end >= 2026; })[0].term_end }; })
       .sort(function (a, b) { return a.end - b.end || a.r.member_state.localeCompare(b.r.member_state); });
     var nc = document.getElementById("now-chips");
-    now.forEach(function (o) { var li = el("li", { "class": "chip" }, short(o.r.member_state)); li.appendChild(el("small", null, o.end)); nc.appendChild(li); });
+    now.forEach(function (o) { var li = el("li", { "class": "chip" }); li.appendChild(withFlag(o.r.member_state, short(o.r.member_state))); li.appendChild(el("small", null, o.end)); nc.appendChild(li); });
     var nx = document.getElementById("next-chips");
     current.filter(function (r) { return r.joining_2027 === "yes"; }).forEach(function (r) {
-      var li = el("li", { "class": "chip" }, short(r.member_state)); li.appendChild(el("small", null, "2027–2028")); nx.appendChild(li);
+      var li = el("li", { "class": "chip" }); li.appendChild(withFlag(r.member_state, short(r.member_state))); li.appendChild(el("small", null, "2027–2028")); nx.appendChild(li);
     });
 
     // top elected
@@ -448,7 +477,8 @@
       });
       hbar("sc-top", top, {
         label: function (d) { return short(d.member_state); }, value: function (d) { return +d.elected_terms; },
-        labelW: function (w) { return Math.min(130, w * 0.36); }, valueW: 70,
+        flag: function (d) { return d.member_state; },
+        labelW: function (w) { return Math.min(156, w * 0.42); }, valueW: 70,
         valueText: function (d) { return d.elected_terms + " terms"; },
         tip: function (d) { return profileLines(d); }
       });
