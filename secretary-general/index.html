@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-root="../">
+<html lang="en" data-root="../" data-v="202610170040">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23009edb'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M8 16h16M16 8c-4 4-4 12 0 16M16 8c4 4 4 12 0 16' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
 <script>(function(){var t="light";try{t=localStorage.getItem("unlbc-theme")==="dark"?"dark":"light";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <link rel="stylesheet" href="../assets/vendor/ocha-icons/icons.css">
-<link rel="stylesheet" href="../assets/css/style.css?v=202610170035">
+<link rel="stylesheet" href="../assets/css/style.css?v=202610170040">
 </head>
 <body>
 <div class="notice-bar" role="note">
@@ -68,21 +68,6 @@
       </div>
 
       <div class="card">
-        <h3><i class="ico huma-users" aria-hidden="true"></i>The candidates</h3>
-        <p class="sub" id="cand-caption">Ranked by encourage votes in the latest reported straw poll.</p>
-        <div class="table-scroll">
-          <table id="cand-table">
-            <thead><tr>
-              <th>#</th><th>Candidate</th><th>Nationality</th><th>Nominated by</th>
-              <th class="num">Encourage</th><th class="num">Discourage</th><th class="num">No opinion</th><th class="num">Change</th>
-            </tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <p class="card-note"><strong>Unofficial results.</strong> The Security Council does not publish straw poll results. Figures are as reported by <a href="https://passblue.com/">PassBlue</a>, with gaps in discourage and no-opinion counts filled from <a href="https://www.gwlvoices.org/">GWL Voices</a>. Blank cells were not reported.</p>
-      </div>
-
-      <div class="card">
         <h3><i class="ico huma-trending" aria-hidden="true"></i>Straw polls: where each candidate stands</h3>
         <p class="sub">Each bar shows how the 15 Council members voted for a candidate. The black line marks the 9 encourage votes needed for a recommendation. Choose a date to see an earlier poll.</p>
         <div class="poll-buttons" id="straw-polls" role="group" aria-label="Choose a straw poll"></div>
@@ -96,7 +81,7 @@
         </div>
         <p class="card-note" id="straw-caption" style="margin:0 0 6px"></p>
         <div class="chart" id="straw-chart"><p class="loading">Loading chart…</p></div>
-        <p class="card-note"><strong>Unofficial results, as reported by PassBlue.</strong> Some discourage and no-opinion counts come from GWL Voices; hatched sections were not reported. The sixth poll, held on 16 October, will be added once PassBlue reports it. Early reports say every candidate received at least one discourage vote from a permanent member (<a href="https://sg.news.yahoo.com/contenders-un-chief-receive-veto-213443085.html">AFP via Yahoo News</a>, <a href="https://lanacion.com.ar/estados-unidos/grossi-tuvo-un-avance-pero-la-carrera-por-la-onu-sigue-trabada-y-con-final-abierto-nid16102026">La Nación</a>). Hover over or tap a name to see a photo and the figures.</p>
+        <p class="card-note"><strong>Unofficial results, as reported by PassBlue.</strong> Some discourage and no-opinion counts come from GWL Voices; hatched sections were not reported. The sixth poll, held on 16 October, will be added once PassBlue reports it. Early reports say every candidate received at least one discourage vote from a permanent member (<a href="https://sg.news.yahoo.com/contenders-un-chief-receive-veto-213443085.html">AFP via Yahoo News</a>, <a href="https://lanacion.com.ar/estados-unidos/grossi-tuvo-un-avance-pero-la-carrera-por-la-onu-sigue-trabada-y-con-final-abierto-nid16102026">La Nación</a>). Hover over or tap a bar for the figures and the nominating State.</p>
       </div>
     </section>
 
@@ -173,9 +158,9 @@
           <h3><i class="ico huma-information-management" aria-hidden="true"></i>Method notes</h3>
           <ul>
             <li>Straw poll results are <strong>unofficial</strong>. The Council meets in private and does not publish them; figures come from journalists' sources.</li>
-            <li>Candidates are ranked by encourage votes in the latest reported poll, with ties broken by fewer discourage votes, following PassBlue.</li>
+            <li>In the straw poll chart, candidates are ordered by encourage votes in the selected poll, with ties broken by fewer discourage votes, following PassBlue.</li>
             <li>Regional groups were formalised in 1963. Earlier Secretaries-General are counted under their country's current group.</li>
-            <li>Photos are loaded from Wikipedia and shown only when freely licensed (CC BY, CC BY-SA, CC0 or public domain), with the photographer and licence credited. UN Photo images are not used, as they require written permission.</li>
+            <li>Portraits are not shown. UN Photo images require written permission for use on websites.</li>
           </ul>
           <h3 style="margin-top:14px"><i class="ico huma-csv-file" aria-hidden="true"></i>Download the data</h3>
           <ul class="downloads">
@@ -199,8 +184,8 @@
 <div class="tooltip" id="tooltip" role="status"></div>
 <script src="../assets/vendor/d3.min.js"></script>
 <script src="../assets/vendor/topojson-client.min.js"></script>
-<script src="../assets/js/site.js?v=202610170035"></script>
-<script src="../assets/js/common.js?v=202610170035"></script>
-<script src="../assets/js/sg.js?v=202610170035"></script>
+<script src="../assets/js/site.js?v=202610170040"></script>
+<script src="../assets/js/common.js?v=202610170040"></script>
+<script src="../assets/js/sg.js?v=202610170040"></script>
 </body>
 </html>

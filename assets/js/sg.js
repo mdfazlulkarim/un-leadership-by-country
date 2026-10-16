@@ -23,15 +23,6 @@
       if (fu) ph.appendChild(el("img", { "class": "flag-badge", src: fu, alt: "" }));
     }
     left.appendChild(ph);
-    if (!d.photo_url && d.wikipedia) {
-      U.wikiPhoto(d.wikipedia).then(function (p) {
-        if (!p || !ph.isConnected) return;
-        ph.replaceChildren(el("img", { "class": "portrait", src: p.src, alt: "Portrait of " + d.name }));
-        var cr = el("p", { "class": "sg-photo-credit" }, U.photoCredit(p) + " ");
-        cr.appendChild(el("a", { href: p.page, target: "_blank", rel: "noopener" }, "(source)"));
-        left.appendChild(cr);
-      });
-    }
     if (d.photo_url && d.photo_credit) {
       var cr = el("p", { "class": "sg-photo-credit" }, "Photo: " + d.photo_credit + (d.photo_licence ? ", " + d.photo_licence : ""));
       if (d.photo_source_url) { cr.appendChild(document.createTextNode(" ")); cr.appendChild(el("a", { href: d.photo_source_url, target: "_blank", rel: "noopener" }, "(source)")); }
@@ -99,7 +90,7 @@
     U.bindTip(hit, function (d) {
       return [{ text: d.name, cls: "tt-value" }, { text: d.country + " · " + d.regional_group, flag: d.country },
         { text: U.fmtDate(d.start) + " to " + U.fmtDate(d.end) + (d.status === "Serving" ? " (serving)" : "") }, { text: "Click for profile and official biography", cls: "tt-detail" }];
-    }, function (d) { return d.wikipedia; });
+    });
     hit.on("click", function (evt, d) { openSG(sgs, sgs.indexOf(d)); })
       .on("keydown", function (evt, d) { if (evt.key === "Enter" || evt.key === " ") { evt.preventDefault(); openSG(sgs, sgs.indexOf(d)); } });
   }
@@ -174,9 +165,10 @@
           { text: d.c.display_name, cls: "tt-value", flag: d.c.nationality },
           { text: d.e + " encourage" + (d.d != null ? " \u00b7 " + d.d + " discourage" : "") + (d.n != null ? " \u00b7 " + d.n + " no opinion" : "") },
           { text: (d.e >= 9 ? "Reached" : "Below") + " the 9 encourage votes needed", cls: "tt-detail" },
+          { text: d.c.gender + (d.c.nominated_by ? " \u00b7 nominated by " + d.c.nominated_by : "") + (d.c.status === "Withdrawn" ? " \u00b7 withdrew " + U.fmtDate(U.parseDate(d.c.withdrawal_date)) : ""), cls: "tt-detail" },
           { text: "Source: " + d.src + ". Unofficial.", cls: "tt-detail" }
         ];
-      }, function () { return d.c.wikipedia; });
+      });
     });
     // the 9-vote marker
     svg.append("line").attr("class", "nine-line").attr("x1", x(9)).attr("x2", x(9)).attr("y1", top - 10).attr("y2", H - 4);
@@ -185,12 +177,12 @@
 
   /* ---------------------------------------------------------------- main */
   Promise.all([
-    d3.csv(U.DATA + "secretaries_general.csv"),
-    d3.csv(U.DATA + "countries.csv"),
-    d3.csv(U.DATA + "sg_selection_2026.csv"),
-    d3.csv(U.DATA + "sg_straw_polls_2026.csv"),
-    d3.csv(U.DATA + "sg_selection_dates.csv"),
-    d3.json(U.DATA + "meta.json")
+    d3.csv(U.data("secretaries_general.csv")),
+    d3.csv(U.data("countries.csv")),
+    d3.csv(U.data("sg_selection_2026.csv")),
+    d3.csv(U.data("sg_straw_polls_2026.csv")),
+    d3.csv(U.data("sg_selection_dates.csv")),
+    d3.json(U.data("meta.json"))
   ]).then(function (res) {
     var sgs = res[0], countries = res[1], cands = res[2], polls = res[3], dates = res[4], meta = res[5];
     U.registerCountries(countries);
@@ -239,29 +231,6 @@
       return eb - ea || da - db || a.display_name.localeCompare(b.display_name);
     });
     var withdrawn = cands.filter(function (c) { return c.status === "Withdrawn"; });
-    var tb = document.querySelector("#cand-table tbody");
-    active.concat(withdrawn).forEach(function (c, i) {
-      var tr = el("tr", c.status === "Withdrawn" ? { "class": "withdrawn" } : null);
-      tr.appendChild(el("td", null, "")).appendChild(c.status === "Withdrawn" ? document.createTextNode("") : el("span", { "class": "rank" }, String(i + 1)));
-      var tdn = el("td"); var nm = el("span", { "class": "cand-name", tabindex: "0" });
-      nm.appendChild(U.flag(c.nationality)); nm.appendChild(U.genderIcon(c.gender)); nm.appendChild(document.createTextNode(c.display_name)); tdn.appendChild(nm);
-      (function (c) { U.bindTipEl(nm, function () { return [{ text: c.display_name, cls: "tt-value", flag: c.nationality }, { text: c.gender + " \u00b7 " + c.nationality }]; }, c.wikipedia); })(c);
-      if (c.status === "Withdrawn") tdn.appendChild(el("div", { "class": "card-note", style: "margin:2px 0 0" }, "Withdrew " + U.fmtDate(U.parseDate(c.withdrawal_date))));
-      tr.appendChild(tdn);
-      tr.appendChild(el("td", null, c.nationality));
-      var tdb = el("td"); if (c.nominated_by) tdb.appendChild(U.withFlag(c.nominated_by)); tr.appendChild(tdb);
-      var L = c.latest;
-      tr.appendChild(el("td", { "class": "num" }, L ? L.encourage : ""));
-      tr.appendChild(el("td", { "class": "num" }, L ? L.discourage : ""));
-      tr.appendChild(el("td", { "class": "num" }, L ? L.no_opinion : ""));
-      var ch = el("td", { "class": "num" });
-      if (L && c.prev) { var dlt = +L.encourage - +c.prev.encourage; ch.textContent = dlt > 0 ? "+" + dlt : dlt < 0 ? "−" + Math.abs(dlt) : "0"; ch.className = "num " + (dlt > 0 ? "delta-up" : dlt < 0 ? "delta-down" : ""); }
-      tr.appendChild(ch);
-      tb.appendChild(tr);
-    });
-    document.getElementById("cand-caption").textContent = "Ranked by encourage votes in the latest reported straw poll (" + U.fmtDate(U.parseDate(latestDate)) +
-      "), in the order PassBlue reports them. Change compares encourage votes with the previous poll.";
-    document.querySelectorAll("[data-latest-poll]").forEach(function (n) { n.textContent = U.fmtDate(U.parseDate(latestDate)); });
 
     /* -- tiles */
     document.getElementById("t-sg").textContent = sgs.length;
@@ -276,7 +245,6 @@
       tr.appendChild(el("td", { "class": "num" }, d.order));
       var tdn = el("td"); var b = el("button", { type: "button", "class": "linklike" }, d.name);
       b.addEventListener("click", function () { openSG(sgs, i); }); tdn.appendChild(b); tr.appendChild(tdn);
-      U.bindTipEl(b, function () { return [{ text: d.name, cls: "tt-value", flag: d.country }, { text: d.start.getFullYear() + "\u2013" + d.end.getFullYear() }, { text: "Click for profile", cls: "tt-detail" }]; }, d.wikipedia);
       var tdc = el("td"); tdc.appendChild(U.withFlag(d.country)); tr.appendChild(tdc);
       tr.appendChild(el("td", null, d.start.getFullYear() + "–" + d.end.getFullYear()));
       var tdl = el("td"); if (d.un_bio_url) tdl.appendChild(el("a", { href: d.un_bio_url, target: "_blank", rel: "noopener", "aria-label": "Official UN page for " + d.name }, "UN page ↗"));

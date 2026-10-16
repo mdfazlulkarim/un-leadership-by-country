@@ -6,6 +6,8 @@ window.UNL = (function () {
   var DATA = ROOT + "data/";
   var FLAGS = ROOT + "assets/flags/";
   var ATLAS = ROOT + "assets/vendor/countries-50m.json";
+  var VER = document.documentElement.getAttribute("data-v") || "";
+  function data(name) { return DATA + name + (VER ? "?v=" + VER : ""); }
 
   var GROUP_ORDER = [
     "African States",
@@ -81,39 +83,6 @@ window.UNL = (function () {
     });
   }
 
-  /* ---------------------------------------------------------------- Wikipedia photos (free licences only) */
-  // The visitor's browser asks Wikipedia for the article's lead image and its licence.
-  // A photo is shown only when its licence is free (CC BY, CC BY-SA, CC0 or public domain), with credit.
-  var FREE = /^(cc[ -]?by(-sa)?\b|cc0|cc[ -]zero|public domain|pd\b|pd-)/i;
-  var photoCache = {};
-  function stripHtml(h) { var d = new DOMParser().parseFromString("<body>" + (h || "") + "</body>", "text/html"); return (d.body.textContent || "").replace(/\s+/g, " ").trim(); }
-  function wikiPhoto(title) {
-    if (!title) return Promise.resolve(null);
-    if (photoCache[title]) return photoCache[title];
-    var api = "https://en.wikipedia.org/w/api.php?format=json&origin=*&action=query&redirects=1";
-    photoCache[title] = fetch(api + "&prop=pageimages&piprop=thumbnail%7Cname&pithumbsize=320&titles=" + encodeURIComponent(title))
-      .then(function (r) { return r.json(); })
-      .then(function (j) {
-        var pages = (j.query && j.query.pages) || {}, pg = pages[Object.keys(pages)[0]];
-        if (!pg || !pg.thumbnail || !pg.pageimage) return null;
-        return fetch(api + "&prop=imageinfo&iiprop=extmetadata%7Curl&titles=" + encodeURIComponent("File:" + pg.pageimage))
-          .then(function (r) { return r.json(); })
-          .then(function (k) {
-            var pp = (k.query && k.query.pages) || {}, fp = pp[Object.keys(pp)[0]];
-            var ii = fp && fp.imageinfo && fp.imageinfo[0], m = (ii && ii.extmetadata) || {};
-            var lic = m.LicenseShortName ? stripHtml(m.LicenseShortName.value) : "";
-            var nonFree = m.NonFree && String(m.NonFree.value).toLowerCase() === "true";
-            if (!lic || nonFree || !FREE.test(lic) || /\b(nc|nd)\b/i.test(lic)) return null;
-            var artist = m.Artist ? stripHtml(m.Artist.value) : "";
-            if (artist.length > 70) artist = artist.slice(0, 67) + "\u2026";
-            return { src: pg.thumbnail.source, licence: lic, artist: artist, page: (ii && ii.descriptionurl) || ("https://en.wikipedia.org/wiki/File:" + encodeURIComponent(pg.pageimage)) };
-          });
-      })
-      .catch(function () { return null; });
-    return photoCache[title];
-  }
-  function photoCredit(p) { return "Photo: " + (p.artist ? p.artist + ", " : "") + p.licence + ", via Wikimedia Commons"; }
-
   /* ---------------------------------------------------------------- gender icons */
   var GENDER_GLYPH = { Woman: "\uf1ed", Man: "\uf1ee" };
   function genderIcon(g) {
@@ -140,10 +109,9 @@ window.UNL = (function () {
     if (anchorEl) { var r = anchorEl.getBoundingClientRect(); return { x: r.left + window.scrollX + r.width / 2, y: r.top + window.scrollY }; }
     return tipPos || { x: 0, y: 0 };
   }
-  function showTip(evt, lines, anchorEl, photoTitle) {
+  function showTip(evt, lines, anchorEl) {
     var t = tipEl();
     t.replaceChildren();
-    t.setAttribute("data-photo", photoTitle || "");
     lines.forEach(function (l) {
       if (!l || !l.text) return;
       var d = el("div", { "class": l.cls || "tt-label" });
@@ -154,23 +122,11 @@ window.UNL = (function () {
     t.classList.add("show");
     tipPos = pointFrom(evt, anchorEl);
     placeTip();
-    if (photoTitle) {
-      wikiPhoto(photoTitle).then(function (p) {
-        if (!p || t.getAttribute("data-photo") !== photoTitle || !t.classList.contains("show")) return;
-        var fig = el("figure", { "class": "tt-photo" });
-        var img = el("img", { src: p.src, alt: "" });
-        img.addEventListener("load", placeTip);
-        fig.appendChild(img);
-        fig.appendChild(el("figcaption", null, photoCredit(p)));
-        t.insertBefore(fig, t.firstChild);
-        placeTip();
-      });
-    }
   }
   function moveTip(evt) { if (tip && tip.classList.contains("show")) { tipPos = pointFrom(evt); placeTip(); } }
-  function hideTip() { if (tip) { tip.classList.remove("show"); tip.setAttribute("data-photo", ""); } }
-  function bindTip(sel, linesFn, photoFn) {
-    function on(evt, d, node) { showTip(evt, linesFn(d), node, photoFn ? photoFn(d) : null); if (node.nextSibling && node.nextSibling.classList) node.nextSibling.classList.add("is-hover"); }
+  function hideTip() { if (tip) tip.classList.remove("show"); }
+  function bindTip(sel, linesFn) {
+    function on(evt, d, node) { showTip(evt, linesFn(d), node); if (node.nextSibling && node.nextSibling.classList) node.nextSibling.classList.add("is-hover"); }
     function off(node) { hideTip(); if (node.nextSibling && node.nextSibling.classList) node.nextSibling.classList.remove("is-hover"); }
     sel.attr("tabindex", 0)
       .on("pointerenter", function (evt, d) { on(evt, d, this); })
@@ -179,11 +135,11 @@ window.UNL = (function () {
       .on("focus", function (evt, d) { on(evt, d, this); });
   }
   // Same behaviour for ordinary HTML elements (table names, labels).
-  function bindTipEl(node, linesFn, photoTitle) {
-    node.addEventListener("pointerenter", function (e) { showTip(e, linesFn(), node, photoTitle); });
+  function bindTipEl(node, linesFn) {
+    node.addEventListener("pointerenter", function (e) { showTip(e, linesFn(), node); });
     node.addEventListener("pointermove", moveTip);
     node.addEventListener("pointerleave", hideTip);
-    node.addEventListener("focus", function (e) { showTip(e, linesFn(), node, photoTitle); });
+    node.addEventListener("focus", function (e) { showTip(e, linesFn(), node); });
     node.addEventListener("blur", hideTip);
   }
 
@@ -338,7 +294,7 @@ window.UNL = (function () {
     parseDate: parseDate, fmtDate: fmtDate, fmtShort: fmtShort, short: short, range: range, el: el,
     registerCountries: registerCountries, flagUrl: flagUrl, flag: flag, withFlag: withFlag, svgFlag: svgFlag,
     showTip: showTip, hideTip: hideTip, moveTip: moveTip, bindTip: bindTip, bindTipEl: bindTipEl, hbar: hbar, openModal: openModal,
-    wikiPhoto: wikiPhoto, photoCredit: photoCredit, genderIcon: genderIcon, GENDER_GLYPH: GENDER_GLYPH,
+    data: data, genderIcon: genderIcon, GENDER_GLYPH: GENDER_GLYPH,
     loadAtlas: loadAtlas, openRegions: openRegions, bindRegionButtons: bindRegionButtons, loadError: loadError, onResize: onResize
   };
 })();

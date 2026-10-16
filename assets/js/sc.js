@@ -250,10 +250,10 @@
 
   /* ---------------------------------------------------------------- main */
   Promise.all([
-    d3.csv(U.DATA + "countries.csv"),
-    d3.csv(U.DATA + "security_council_terms.csv"),
-    d3.csv(U.DATA + "secretaries_general.csv"),
-    d3.json(U.DATA + "meta.json"),
+    d3.csv(U.data("countries.csv")),
+    d3.csv(U.data("security_council_terms.csv")),
+    d3.csv(U.data("secretaries_general.csv")),
+    d3.json(U.data("meta.json")),
     U.loadAtlas()
   ]).then(function (res) {
     var countries = res[0], terms = res[1], sgs = res[2], meta = res[3], world = res[4];
