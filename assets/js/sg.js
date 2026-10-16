@@ -23,6 +23,15 @@
       if (fu) ph.appendChild(el("img", { "class": "flag-badge", src: fu, alt: "" }));
     }
     left.appendChild(ph);
+    if (!d.photo_url && d.wikipedia) {
+      U.wikiPhoto(d.wikipedia).then(function (p) {
+        if (!p || !ph.isConnected) return;
+        ph.replaceChildren(el("img", { "class": "portrait", src: p.src, alt: "Portrait of " + d.name }));
+        var cr = el("p", { "class": "sg-photo-credit" }, U.photoCredit(p) + " ");
+        cr.appendChild(el("a", { href: p.page, target: "_blank", rel: "noopener" }, "(source)"));
+        left.appendChild(cr);
+      });
+    }
     if (d.photo_url && d.photo_credit) {
       var cr = el("p", { "class": "sg-photo-credit" }, "Photo: " + d.photo_credit + (d.photo_licence ? ", " + d.photo_licence : ""));
       if (d.photo_source_url) { cr.appendChild(document.createTextNode(" ")); cr.appendChild(el("a", { href: d.photo_source_url, target: "_blank", rel: "noopener" }, "(source)")); }
@@ -90,68 +99,88 @@
     U.bindTip(hit, function (d) {
       return [{ text: d.name, cls: "tt-value" }, { text: d.country + " · " + d.regional_group, flag: d.country },
         { text: U.fmtDate(d.start) + " to " + U.fmtDate(d.end) + (d.status === "Serving" ? " (serving)" : "") }, { text: "Click for profile and official biography", cls: "tt-detail" }];
-    });
+    }, function (d) { return d.wikipedia; });
     hit.on("click", function (evt, d) { openSG(sgs, sgs.indexOf(d)); })
       .on("keydown", function (evt, d) { if (evt.key === "Enter" || evt.key === " ") { evt.preventDefault(); openSG(sgs, sgs.indexOf(d)); } });
   }
 
-  /* ---------------------------------------------------------------- straw poll small multiples */
-  function strawPolls(cands, polls, order) {
-    var grid = document.getElementById("straw-sm");
-    grid.replaceChildren();
+  /* ---------------------------------------------------------------- straw polls: all 15 votes per candidate (option A) */
+  var strawState = { poll: null };
+  function strawBars(cands, polls) {
     var pollNums = Array.from(new Set(polls.map(function (p) { return +p.poll; }))).sort(d3.ascending);
+    if (strawState.poll == null) strawState.poll = pollNums[pollNums.length - 1];
     var pollDate = {}; polls.forEach(function (p) { pollDate[+p.poll] = U.parseDate(p.date); });
-    order.forEach(function (c) {
-      var rows = pollNums.map(function (n) {
-        var r = polls.filter(function (p) { return +p.poll === n && p.candidate === c.display_name; })[0];
-        return { poll: n, date: pollDate[n], e: r ? +r.encourage : null, d: r && r.discourage !== "" ? +r.discourage : null, n: r && r.no_opinion !== "" ? +r.no_opinion : null, src: r ? r.source : "" };
-      });
-      var box = el("div", { "class": "sm" + (c.status === "Withdrawn" ? " withdrawn" : "") });
-      var h = el("h4");
-      h.appendChild(U.withFlag(c.nationality, c.display_name));
-      box.appendChild(h);
-      var last = rows.filter(function (r) { return r.e != null; }).slice(-1)[0];
-      box.appendChild(el("p", { "class": "sub2" }, c.status === "Withdrawn" ? c.nationality + " · withdrew " + U.fmtDate(U.parseDate(c.withdrawal_date)) :
-        c.nationality + " · latest: " + last.e + " encourage" + (last.d != null ? ", " + last.d + " discourage" : "")));
-      var svgBox = el("div"); box.appendChild(svgBox); grid.appendChild(box);
-      var W = Math.max(180, svgBox.clientWidth || 220), H = 118, m = { l: 18, r: 22, t: 8, b: 18 };
-      var x = d3.scalePoint().domain(pollNums).range([m.l, W - m.r]).padding(0.1);
-      var y = d3.scaleLinear().domain([0, 15]).range([H - m.b, m.t]);
-      var svg = d3.select(svgBox).append("svg").attr("width", W).attr("height", H).attr("role", "img")
-        .attr("aria-label", c.display_name + ": encourage votes by poll " + rows.map(function (r) { return r.e == null ? "not a candidate" : r.e; }).join(", "));
-      svg.append("line").attr("class", "gridline").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(0)).attr("y2", y(0)).style("stroke", "var(--baseline)");
-      svg.append("line").attr("class", "thresh").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(9)).attr("y2", y(9));
-      svg.append("text").attr("class", "thresh-label").attr("x", m.l - 4).attr("y", y(9)).attr("dy", "0.35em").attr("text-anchor", "end").text("9");
-      svg.append("text").attr("class", "thresh-label").attr("x", m.l - 4).attr("y", y(0)).attr("dy", "0.35em").attr("text-anchor", "end").text("0");
-      svg.selectAll("text.xlab").data(rows).join("text").attr("class", "xlab").attr("x", function (r) { return x(r.poll); }).attr("y", H - 4)
-        .attr("text-anchor", "middle").text(function (r) { return U.fmtShort(r.date); });
-      [["d", "line-d", "dot-d"], ["e", "line-e", "dot-e"]].forEach(function (s) {
-        var line = d3.line().defined(function (r) { return r[s[0]] != null; }).x(function (r) { return x(r.poll); }).y(function (r) { return y(r[s[0]]); });
-        svg.append("path").attr("class", s[1]).attr("fill", "none").attr("stroke-width", 2).attr("stroke-linejoin", "round").attr("stroke-linecap", "round").attr("d", line(rows));
-        svg.selectAll("circle." + s[2]).data(rows.filter(function (r) { return r[s[0]] != null; })).join("circle").attr("class", s[2])
-          .attr("cx", function (r) { return x(r.poll); }).attr("cy", function (r) { return y(r[s[0]]); }).attr("r", 4)
-          .attr("stroke", "var(--surface-1)").attr("stroke-width", 2);
-      });
-      // end labels on the latest values, nudged apart if they collide
-      var le = rows.filter(function (r) { return r.e != null; }).slice(-1)[0], ld = rows.filter(function (r) { return r.d != null; }).slice(-1)[0];
-      var ye = le ? y(le.e) : null, yd = ld ? y(ld.d) : null;
-      if (ye != null && yd != null && Math.abs(ye - yd) < 12 && le.poll === ld.poll) { if (ye <= yd) { ye -= 6; yd += 6; } else { ye += 6; yd -= 6; } }
-      if (le) svg.append("text").attr("class", "end-label").attr("x", x(le.poll) + 8).attr("y", ye).attr("dy", "0.35em").text(le.e);
-      if (ld) svg.append("text").attr("class", "end-label").attr("x", x(ld.poll) + 8).attr("y", yd).attr("dy", "0.35em").style("fill", "var(--text-secondary)").text(ld.d);
-      // hover columns
-      var colW = pollNums.length > 1 ? x(pollNums[1]) - x(pollNums[0]) : 40;
-      var hits = svg.selectAll("rect.col-hit").data(rows).join("rect").attr("class", "col-hit")
-        .attr("x", function (r) { return x(r.poll) - colW / 2; }).attr("y", m.t - 4).attr("width", colW).attr("height", H - m.t - m.b + 8).attr("rx", 4)
-        .attr("aria-label", function (r) { return "Poll " + r.poll + ", " + U.fmtDate(r.date) + ": " + (r.e == null ? "not a candidate" : r.e + " encourage"); });
-      U.bindTip(hits, function (r) {
-        if (r.e == null) return [{ text: "Poll " + r.poll + " · " + U.fmtDate(r.date), cls: "tt-label" }, { text: c.status === "Withdrawn" && r.date > U.parseDate(c.withdrawal_date) ? "Withdrawn" : "Not yet a candidate", cls: "tt-value" }];
-        return [
-          { text: r.e + " encourage" + (r.d != null ? " · " + r.d + " discourage" : "") + (r.n != null ? " · " + r.n + " no opinion" : ""), cls: "tt-value" },
-          { text: c.display_name + " · poll " + r.poll + ", " + U.fmtDate(r.date) },
-          { text: "Source: " + r.src + ". Unofficial.", cls: "tt-detail" }
-        ];
-      });
+
+    // poll buttons
+    var bar = document.getElementById("straw-polls");
+    bar.replaceChildren();
+    pollNums.forEach(function (n) {
+      var b = el("button", { type: "button", "aria-pressed": n === strawState.poll ? "true" : "false" }, U.fmtShort(pollDate[n]));
+      b.setAttribute("aria-label", "Straw poll " + n + ", " + U.fmtDate(pollDate[n]));
+      b.addEventListener("click", function () { strawState.poll = n; strawBars(cands, polls); });
+      bar.appendChild(b);
     });
+    document.getElementById("straw-caption").textContent = "Straw poll " + strawState.poll + " of " + pollNums.length + ", held on " + U.fmtDate(pollDate[strawState.poll]) + ".";
+
+    var rows = cands.map(function (c) {
+      var r = polls.filter(function (p) { return +p.poll === strawState.poll && p.candidate === c.display_name; })[0];
+      if (!r) return null;
+      return { c: c, e: +r.encourage, n: r.no_opinion !== "" ? +r.no_opinion : null, d: r.discourage !== "" ? +r.discourage : null, src: r.source };
+    }).filter(Boolean).sort(function (a, b) { return b.e - a.e || (a.d == null ? 99 : a.d) - (b.d == null ? 99 : b.d) || a.c.display_name.localeCompare(b.c.display_name); });
+
+    var node = document.getElementById("straw-chart");
+    node.replaceChildren();
+    var W = Math.max(300, node.clientWidth), narrow = W < 620;
+    var L = narrow ? 0 : Math.min(280, W * 0.36), rowH = narrow ? 60 : 42, top = 30, barH = 24;
+    var H = rows.length * rowH + top + 8;
+    var x = d3.scaleLinear().domain([0, 15]).range([L, W - 2]);
+    var svg = d3.select(node).append("svg").attr("width", W).attr("height", H).attr("role", "img")
+      .attr("aria-label", "Straw poll of " + U.fmtDate(pollDate[strawState.poll]) + ": " + rows.map(function (r) { return r.c.display_name + " " + r.e + " encourage" + (r.d != null ? ", " + r.d + " discourage" : ""); }).join("; "));
+    var defs = svg.append("defs");
+    var pt = defs.append("pattern").attr("id", "hatch").attr("width", 6).attr("height", 6).attr("patternUnits", "userSpaceOnUse").attr("patternTransform", "rotate(45)");
+    pt.append("rect").attr("width", 6).attr("height", 6).attr("fill", "var(--surface-1)");
+    pt.append("rect").attr("width", 3).attr("height", 6).attr("fill", "var(--grid)");
+
+    rows.forEach(function (d, i) {
+      var y0 = top + i * rowH;
+      var g = svg.append("g").attr("class", "straw-row" + (d.c.status === "Withdrawn" ? " withdrawn" : "")).attr("transform", "translate(0," + y0 + ")");
+      var ly = narrow ? 9 : rowH / 2, by = narrow ? 22 : (rowH - barH) / 2;
+      // label: flag, gender icon, name
+      var fu = U.flagUrl(d.c.nationality);
+      if (fu) { g.append("image").attr("href", fu).attr("x", 0).attr("y", ly - 7.5).attr("width", 20).attr("height", 15).attr("preserveAspectRatio", "xMidYMid slice"); g.append("rect").attr("class", "flag-ring").attr("x", 0).attr("y", ly - 7.5).attr("width", 20).attr("height", 15).attr("rx", 1.5); }
+      g.append("text").attr("class", "gender-glyph " + (d.c.gender === "Woman" ? "is-woman" : "is-man")).attr("x", 25).attr("y", ly).attr("dy", "0.36em")
+        .text(U.GENDER_GLYPH[d.c.gender] || "").append("title").text(d.c.gender);
+      g.append("text").attr("class", "straw-name").attr("x", 50).attr("y", ly).attr("dy", "0.35em")
+        .text(d.c.display_name + (d.c.status === "Withdrawn" ? " (withdrew later)" : ""));
+      // segments: encourage | no opinion | not reported | discourage
+      var parts = [["e", d.e, "var(--mark)"]];
+      if (d.n != null) parts.push(["n", d.n, "var(--grid)"]);
+      var known = d.e + (d.n || 0) + (d.d || 0);
+      if (known < 15) parts.push(["u", 15 - known, "url(#hatch)"]);
+      if (d.d != null) parts.push(["d", d.d, "var(--series-2)"]);
+      var acc = 0;
+      parts.forEach(function (p) {
+        if (!p[1]) return;
+        var a = x(acc), b2 = x(acc + p[1]);
+        g.append("rect").attr("class", "seg seg-" + p[0]).attr("x", a + 1).attr("y", by).attr("width", Math.max(0, b2 - a - 2)).attr("height", barH).attr("rx", 3).attr("fill", p[2]);
+        var cxl = (a + b2) / 2; if (Math.abs(cxl - x(9)) < 12) cxl = x(9) + 16;
+        if (p[0] !== "u" && b2 - a > 20) g.append("text").attr("class", "seg-label seg-label-" + p[0]).attr("x", cxl).attr("y", by + barH / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(p[1]);
+        acc += p[1];
+      });
+      var hit = g.append("rect").attr("class", "hit").attr("x", 0).attr("y", 0).attr("width", W).attr("height", rowH)
+        .attr("aria-label", d.c.display_name + ": " + d.e + " encourage" + (d.d != null ? ", " + d.d + " discourage" : "") + (d.n != null ? ", " + d.n + " no opinion" : ""));
+      U.bindTip(hit, function () {
+        return [
+          { text: d.c.display_name, cls: "tt-value", flag: d.c.nationality },
+          { text: d.e + " encourage" + (d.d != null ? " \u00b7 " + d.d + " discourage" : "") + (d.n != null ? " \u00b7 " + d.n + " no opinion" : "") },
+          { text: (d.e >= 9 ? "Reached" : "Below") + " the 9 encourage votes needed", cls: "tt-detail" },
+          { text: "Source: " + d.src + ". Unofficial.", cls: "tt-detail" }
+        ];
+      }, function () { return d.c.wikipedia; });
+    });
+    // the 9-vote marker
+    svg.append("line").attr("class", "nine-line").attr("x1", x(9)).attr("x2", x(9)).attr("y1", top - 10).attr("y2", H - 4);
+    svg.append("text").attr("class", "nine-label").attr("x", x(9)).attr("y", top - 16).attr("text-anchor", "middle").text("9 needed");
   }
 
   /* ---------------------------------------------------------------- main */
@@ -214,7 +243,9 @@
     active.concat(withdrawn).forEach(function (c, i) {
       var tr = el("tr", c.status === "Withdrawn" ? { "class": "withdrawn" } : null);
       tr.appendChild(el("td", null, "")).appendChild(c.status === "Withdrawn" ? document.createTextNode("") : el("span", { "class": "rank" }, String(i + 1)));
-      var tdn = el("td"); var nm = el("span", { "class": "cand-name" }); nm.appendChild(U.withFlag(c.nationality, c.display_name)); tdn.appendChild(nm);
+      var tdn = el("td"); var nm = el("span", { "class": "cand-name", tabindex: "0" });
+      nm.appendChild(U.flag(c.nationality)); nm.appendChild(U.genderIcon(c.gender)); nm.appendChild(document.createTextNode(c.display_name)); tdn.appendChild(nm);
+      (function (c) { U.bindTipEl(nm, function () { return [{ text: c.display_name, cls: "tt-value", flag: c.nationality }, { text: c.gender + " \u00b7 " + c.nationality }]; }, c.wikipedia); })(c);
       if (c.status === "Withdrawn") tdn.appendChild(el("div", { "class": "card-note", style: "margin:2px 0 0" }, "Withdrew " + U.fmtDate(U.parseDate(c.withdrawal_date))));
       tr.appendChild(tdn);
       tr.appendChild(el("td", null, c.nationality));
@@ -245,6 +276,7 @@
       tr.appendChild(el("td", { "class": "num" }, d.order));
       var tdn = el("td"); var b = el("button", { type: "button", "class": "linklike" }, d.name);
       b.addEventListener("click", function () { openSG(sgs, i); }); tdn.appendChild(b); tr.appendChild(tdn);
+      U.bindTipEl(b, function () { return [{ text: d.name, cls: "tt-value", flag: d.country }, { text: d.start.getFullYear() + "\u2013" + d.end.getFullYear() }, { text: "Click for profile", cls: "tt-detail" }]; }, d.wikipedia);
       var tdc = el("td"); tdc.appendChild(U.withFlag(d.country)); tr.appendChild(tdc);
       tr.appendChild(el("td", null, d.start.getFullYear() + "–" + d.end.getFullYear()));
       var tdl = el("td"); if (d.un_bio_url) tdl.appendChild(el("a", { href: d.un_bio_url, target: "_blank", rel: "noopener", "aria-label": "Official UN page for " + d.name }, "UN page ↗"));
@@ -268,7 +300,7 @@
         valueText: function (d) { return String(d.n); },
         tip: function (d) { return [{ text: d.n + (d.n === 1 ? " Secretary-General" : " Secretaries-General"), cls: "tt-value" }, { text: d.group }, { text: d.names.join(", ") || "None to date", cls: "tt-detail" }]; }
       });
-      strawPolls(cands, polls, active.concat(withdrawn));
+      strawBars(active.concat(withdrawn), polls);
     }
     drawAll();
     U.onResize(drawAll);

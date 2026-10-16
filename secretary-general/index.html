@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23009edb'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='white' stroke-width='2.5'/%3E%3Cpath d='M8 16h16M16 8c-4 4-4 12 0 16M16 8c4 4 4 12 0 16' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E">
 <script>(function(){var t="light";try{t=localStorage.getItem("unlbc-theme")==="dark"?"dark":"light";}catch(e){}document.documentElement.setAttribute("data-theme",t);})();</script>
 <link rel="stylesheet" href="../assets/vendor/ocha-icons/icons.css">
-<link rel="stylesheet" href="../assets/css/style.css?v=202610170026">
+<link rel="stylesheet" href="../assets/css/style.css?v=202610170035">
 </head>
 <body>
 <div class="notice-bar" role="note">
@@ -83,15 +83,20 @@
       </div>
 
       <div class="card">
-        <h3><i class="ico huma-trending" aria-hidden="true"></i>Straw polls over time</h3>
-        <p class="sub">Votes for each candidate in each straw poll. The line at 9 marks the minimum needed for a recommendation.</p>
-        <div class="sm-legend" aria-hidden="true">
-          <span class="k"><span class="ln" style="background:var(--mark)"></span>Encourage</span>
-          <span class="k"><span class="ln" style="background:var(--series-2)"></span>Discourage</span>
-          <span class="k"><span class="ln" style="background:var(--text-muted);height:1px"></span>9 votes needed</span>
+        <h3><i class="ico huma-trending" aria-hidden="true"></i>Straw polls: where each candidate stands</h3>
+        <p class="sub">Each bar shows how the 15 Council members voted for a candidate. The black line marks the 9 encourage votes needed for a recommendation. Choose a date to see an earlier poll.</p>
+        <div class="poll-buttons" id="straw-polls" role="group" aria-label="Choose a straw poll"></div>
+        <div class="straw-legend" aria-hidden="true">
+          <span><i class="ico huma-person-1 gender-ico is-woman"></i>Woman</span>
+          <span><i class="ico huma-person-2 gender-ico is-man"></i>Man</span>
+          <span><i class="sw" style="background:var(--mark)"></i>Encourage</span>
+          <span><i class="sw" style="background:var(--grid);box-shadow:inset 0 0 0 1px var(--baseline)"></i>No opinion</span>
+          <span><i class="sw" style="background:var(--series-2)"></i>Discourage</span>
+          <span><i class="sw hatch"></i>Not reported</span>
         </div>
-        <div class="sm-grid" id="straw-sm"><p class="loading">Loading charts…</p></div>
-        <p class="card-note"><strong>Unofficial results, as reported by PassBlue</strong> (encourage votes in every poll). Some discourage and no-opinion counts come from GWL Voices; gaps in the orange line mean they were not reported. The sixth poll, held on 16 October, will be added once PassBlue reports it. Early reports say every candidate received at least one discourage vote from a permanent member (<a href="https://sg.news.yahoo.com/contenders-un-chief-receive-veto-213443085.html">AFP via Yahoo News</a>, <a href="https://lanacion.com.ar/estados-unidos/grossi-tuvo-un-avance-pero-la-carrera-por-la-onu-sigue-trabada-y-con-final-abierto-nid16102026">La Nación</a>). Hover over or tap a poll for its figures and source.</p>
+        <p class="card-note" id="straw-caption" style="margin:0 0 6px"></p>
+        <div class="chart" id="straw-chart"><p class="loading">Loading chart…</p></div>
+        <p class="card-note"><strong>Unofficial results, as reported by PassBlue.</strong> Some discourage and no-opinion counts come from GWL Voices; hatched sections were not reported. The sixth poll, held on 16 October, will be added once PassBlue reports it. Early reports say every candidate received at least one discourage vote from a permanent member (<a href="https://sg.news.yahoo.com/contenders-un-chief-receive-veto-213443085.html">AFP via Yahoo News</a>, <a href="https://lanacion.com.ar/estados-unidos/grossi-tuvo-un-avance-pero-la-carrera-por-la-onu-sigue-trabada-y-con-final-abierto-nid16102026">La Nación</a>). Hover over or tap a name to see a photo and the figures.</p>
       </div>
     </section>
 
@@ -170,7 +175,7 @@
             <li>Straw poll results are <strong>unofficial</strong>. The Council meets in private and does not publish them; figures come from journalists' sources.</li>
             <li>Candidates are ranked by encourage votes in the latest reported poll, with ties broken by fewer discourage votes, following PassBlue.</li>
             <li>Regional groups were formalised in 1963. Earlier Secretaries-General are counted under their country's current group.</li>
-            <li>Portraits are not shown: UN Photo images require written permission for use on websites.</li>
+            <li>Photos are loaded from Wikipedia and shown only when freely licensed (CC BY, CC BY-SA, CC0 or public domain), with the photographer and licence credited. UN Photo images are not used, as they require written permission.</li>
           </ul>
           <h3 style="margin-top:14px"><i class="ico huma-csv-file" aria-hidden="true"></i>Download the data</h3>
           <ul class="downloads">
@@ -187,16 +192,15 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p><strong>UN Leadership by Country</strong> is an independent personal project and not a UN publication.</p>
-    <p>Sources: public UN records. Data and text CC BY 4.0, code MIT. Icons: <a href="https://www.unocha.org/">OCHA</a> (public domain). Flags: <a href="https://github.com/lipis/flag-icons">flag-icons</a> (MIT).</p>
+    <p><strong>UN Leadership by Country</strong> is a personal project, not a UN publication · Data: public UN records, CC BY 4.0 · Code: MIT · Icons: <a href="https://www.unocha.org/">OCHA</a> · Flags: <a href="https://github.com/lipis/flag-icons">flag-icons</a></p>
   </div>
 </footer>
 
 <div class="tooltip" id="tooltip" role="status"></div>
 <script src="../assets/vendor/d3.min.js"></script>
 <script src="../assets/vendor/topojson-client.min.js"></script>
-<script src="../assets/js/site.js?v=202610170026"></script>
-<script src="../assets/js/common.js?v=202610170026"></script>
-<script src="../assets/js/sg.js?v=202610170026"></script>
+<script src="../assets/js/site.js?v=202610170035"></script>
+<script src="../assets/js/common.js?v=202610170035"></script>
+<script src="../assets/js/sg.js?v=202610170035"></script>
 </body>
 </html>

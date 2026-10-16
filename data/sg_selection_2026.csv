@@ -1,9 +1,9 @@
-candidate,display_name,nationality,nationality_iso3,regional_group,nominated_by,nomination_date,status,withdrawal_date
-Ivonne A-Baki,Ivonne A-Baki,Ecuador,ECU,Latin American and Caribbean States,Tonga,2026-08-17,Active,
-María Fernanda Espinosa Garcés,María Fernanda Espinosa,Ecuador,ECU,Latin American and Caribbean States,Antigua and Barbuda,2026-05-11,Active,
-Rafael Mariano Grossi,Rafael Grossi,Argentina,ARG,Latin American and Caribbean States,Argentina,2025-11-26,Active,
-Rebeca Grynspan Mayufis,Rebeca Grynspan,Costa Rica,CRI,Latin American and Caribbean States,Costa Rica,2026-03-03,Active,
-Olara Otunnu,Olara Otunnu,Uganda,UGA,African States,Uganda,2026-07-24,Active,
-Carolyn Rodrigues-Birkett,Carolyn Rodrigues Birkett,Guyana,GUY,Latin American and Caribbean States,Guyana,2026-06-15,Active,
-Macky Sall,Macky Sall,Senegal,SEN,African States,Burundi,2026-03-02,Active,
-Michelle Bachelet,Michelle Bachelet,Chile,CHL,Latin American and Caribbean States,,,Withdrawn,2026-09-20
+candidate,display_name,gender,nationality,nationality_iso3,regional_group,nominated_by,nomination_date,status,withdrawal_date,wikipedia
+Ivonne A-Baki,Ivonne A-Baki,Woman,Ecuador,ECU,Latin American and Caribbean States,Tonga,2026-08-17,Active,,Ivonne Baki
+María Fernanda Espinosa Garcés,María Fernanda Espinosa,Woman,Ecuador,ECU,Latin American and Caribbean States,Antigua and Barbuda,2026-05-11,Active,,María Fernanda Espinosa
+Rafael Mariano Grossi,Rafael Grossi,Man,Argentina,ARG,Latin American and Caribbean States,Argentina,2025-11-26,Active,,Rafael Grossi
+Rebeca Grynspan Mayufis,Rebeca Grynspan,Woman,Costa Rica,CRI,Latin American and Caribbean States,Costa Rica,2026-03-03,Active,,Rebeca Grynspan
+Olara Otunnu,Olara Otunnu,Man,Uganda,UGA,African States,Uganda,2026-07-24,Active,,Olara Otunnu
+Carolyn Rodrigues-Birkett,Carolyn Rodrigues Birkett,Woman,Guyana,GUY,Latin American and Caribbean States,Guyana,2026-06-15,Active,,Carolyn Rodrigues-Birkett
+Macky Sall,Macky Sall,Man,Senegal,SEN,African States,Burundi,2026-03-02,Active,,Macky Sall
+Michelle Bachelet,Michelle Bachelet,Woman,Chile,CHL,Latin American and Caribbean States,,,Withdrawn,2026-09-20,Michelle Bachelet

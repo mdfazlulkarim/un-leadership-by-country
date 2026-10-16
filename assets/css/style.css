@@ -443,3 +443,33 @@ dialog.modal::backdrop { background: rgba(5, 15, 25, 0.55); }
 #sg-table td:nth-child(4), #sg-table td:nth-child(5) { white-space: nowrap; }
 .grid-2.wide-right { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
 @media (max-width: 860px) { .grid-2.wide-right { grid-template-columns: minmax(0, 1fr); } }
+
+/* straw poll bars (option A) */
+.poll-buttons { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 12px; }
+.poll-buttons button { font: inherit; font-size: 14px; border: 1px solid var(--baseline); background: var(--surface-1); color: var(--text-secondary); border-radius: 999px; padding: 5px 13px; cursor: pointer; }
+.poll-buttons button:hover { border-color: var(--link); }
+.poll-buttons button[aria-pressed="true"] { background: var(--mark); border-color: var(--mark); color: #fff; font-weight: 600; }
+.straw-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
+.straw-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.straw-legend .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+.straw-legend .sw.hatch { background: repeating-linear-gradient(45deg, var(--grid), var(--grid) 3px, var(--surface-1) 3px, var(--surface-1) 6px); box-shadow: inset 0 0 0 1px var(--baseline); }
+#straw-chart svg { display: block; overflow: visible; }
+.straw-name { font-size: 15px; font-weight: 600; fill: var(--text-primary); pointer-events: none; }
+.straw-row.withdrawn { opacity: 0.55; }
+.seg-label { font-size: 12.5px; font-weight: 700; fill: #0b0b0b; pointer-events: none; font-variant-numeric: tabular-nums; }
+.seg-label-n { fill: var(--text-secondary); font-weight: 600; }
+.seg { pointer-events: none; }
+.nine-line { stroke: var(--text-primary); stroke-width: 2; pointer-events: none; }
+.nine-label { font-size: 12px; fill: var(--text-secondary); pointer-events: none; }
+.chart text.gender-glyph { font-family: "ocha-icons"; font-size: 21px; pointer-events: none; }
+.gender-glyph.is-woman { fill: var(--icon); } .gender-glyph.is-man { fill: var(--text-muted); }
+.gender-ico { font-size: 18px; margin-right: 5px; vertical-align: -3px; }
+.gender-ico.is-woman { color: var(--icon); } .gender-ico.is-man { color: var(--text-muted); }
+#straw-chart .hit { cursor: default; }
+#straw-chart .straw-row:hover .seg, #straw-chart .straw-row:focus-within .seg { opacity: 0.82; }
+#straw-chart .hit:focus { outline: none; }
+
+/* photo in tooltips */
+.tooltip .tt-photo { margin: 0 0 8px; }
+.tooltip .tt-photo img { display: block; width: 132px; height: 160px; object-fit: cover; object-position: center top; border-radius: 6px; background: var(--surface-2); }
+.tooltip .tt-photo figcaption { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; max-width: 250px; line-height: 1.35; }
