@@ -512,3 +512,10 @@ dialog.modal::backdrop { background: rgba(5, 15, 25, 0.55); }
   .site-nav { flex-wrap: wrap; gap: 6px 14px; font-size: 14px; width: 100%; }
   .site-nav .theme-toggle { margin-left: auto; }
 }
+
+/* footer social links */
+.site-footer .wrap { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
+.site-footer .social { display: flex; gap: 14px; margin: 0; }
+.site-footer .social a { display: inline-flex; color: var(--text-muted); transition: color 120ms ease; }
+.site-footer .social a:hover, .site-footer .social a:focus-visible { color: var(--link); }
+.site-footer .social svg { width: 18px; height: 18px; display: block; }
