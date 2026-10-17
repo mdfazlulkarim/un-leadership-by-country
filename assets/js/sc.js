@@ -22,7 +22,7 @@
     "upper volta": "Burkina Faso", "dahomey": "Benin", "byelorussia": "Belarus", "the gambia": "Gambia", "the bahamas": "Bahamas"
   };
   var U = window.UNL, el = U.el, short = U.short, range = U.range;
-  var termsBy = {}, sgByCountry = {};
+  var termsBy = {}, sgByCountry = {}; var headsBy = {};
 
   /* ---------------------------------------------------------------- horseshoe */
   var SIDE_LEFT = ["African States", "Asia-Pacific States"];
@@ -218,7 +218,20 @@
     var sg = sgByCountry[r.member_state];
     add("Secretary-General", sg ? sg.name + " (" + sg.start_date.slice(0, 4) + "–" + sg.end_date.slice(0, 4) + ")" : "None to date");
     if (r.sg_candidate_2026) add("2026 candidate", r.sg_candidate_2026.split(" | ").join(", "));
-    add("Heads of UN agencies", "Coming soon in this series");
+    var hs = headsBy[r.member_state] || [];
+    function headsList(page, label, href) {
+      var list = hs.filter(function (h) { return h.page === page; });
+      var f = document.createDocumentFragment();
+      if (!list.length) { f.appendChild(document.createTextNode("None at present")); return f; }
+      list.forEach(function (h, i) {
+        if (i) f.appendChild(document.createTextNode("; "));
+        f.appendChild(el("a", { href: href + "#" + encodeURIComponent(h.acronym) }, h.acronym));
+        f.appendChild(document.createTextNode(" (" + h.head + (h.acting === "yes" ? ", acting" : "") + ")"));
+      });
+      return f;
+    }
+    add("Heads of UN agencies", headsList("agencies", "agencies", "../un-agencies/"));
+    add("Heads of Secretariat offices", headsList("secretariat", "offices", "../un-secretariat/"));
     if (r.note) add("Note", r.note);
     p.appendChild(dl);
   }
@@ -254,9 +267,11 @@
     d3.csv(U.data("security_council_terms.csv")),
     d3.csv(U.data("secretaries_general.csv")),
     d3.json(U.data("meta.json")),
-    U.loadAtlas()
+    U.loadAtlas(),
+    d3.csv(U.data("un_entity_heads.csv"))
   ]).then(function (res) {
     var countries = res[0], terms = res[1], sgs = res[2], meta = res[3], world = res[4];
+    res[5].forEach(function (h) { if (h.nationality) (headsBy[h.nationality] = headsBy[h.nationality] || []).push(h); });
     U.registerCountries(countries);
     document.querySelectorAll("[data-asof]").forEach(function (n) { n.textContent = U.fmtDate(U.parseDate(meta.as_of)); });
     terms.forEach(function (t) { (termsBy[t.member_state] = termsBy[t.member_state] || []).push(t); });

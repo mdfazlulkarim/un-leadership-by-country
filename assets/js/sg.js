@@ -116,15 +116,20 @@
     var rows = cands.map(function (c) {
       var r = polls.filter(function (p) { return +p.poll === strawState.poll && p.candidate === c.display_name; })[0];
       if (!r) return null;
-      return { c: c, e: +r.encourage, n: r.no_opinion !== "" ? +r.no_opinion : null, d: r.discourage !== "" ? +r.discourage : null, src: r.source };
+      function num(v) { return v != null && v !== "" ? +v : null; }
+      return { c: c, e: +r.encourage, n: num(r.no_opinion), d: num(r.discourage), src: r.source,
+        p5: num(r.p5_discourage) == null ? null : { e: num(r.p5_encourage), d: num(r.p5_discourage), n: num(r.p5_no_opinion) } };
     }).filter(Boolean).sort(function (a, b) { return b.e - a.e || (a.d == null ? 99 : a.d) - (b.d == null ? 99 : b.d) || a.c.display_name.localeCompare(b.c.display_name); });
 
     var node = document.getElementById("straw-chart");
     node.replaceChildren();
     var W = Math.max(300, node.clientWidth), narrow = W < 620;
-    var L = narrow ? 0 : Math.min(280, W * 0.36), rowH = narrow ? 60 : 42, top = 30, barH = 24;
+    var hasP5 = rows.some(function (r) { return r.p5; });
+    var P5W = hasP5 && !narrow ? 112 : 0;
+    var L = narrow ? 0 : Math.min(280, W * 0.32), rowH = narrow ? (hasP5 ? 86 : 60) : 42, top = 30, barH = 24;
     var H = rows.length * rowH + top + 8;
-    var x = d3.scaleLinear().domain([0, 15]).range([L, W - 2]);
+    var x = d3.scaleLinear().domain([0, 15]).range([L, W - 2 - P5W]);
+    document.getElementById("p5-legend").hidden = !hasP5;
     var svg = d3.select(node).append("svg").attr("width", W).attr("height", H).attr("role", "img")
       .attr("aria-label", "Straw poll of " + U.fmtDate(pollDate[strawState.poll]) + ": " + rows.map(function (r) { return r.c.display_name + " " + r.e + " encourage" + (r.d != null ? ", " + r.d + " discourage" : ""); }).join("; "));
     var defs = svg.append("defs");
@@ -158,13 +163,28 @@
         if (p[0] !== "u" && b2 - a > 20) g.append("text").attr("class", "seg-label seg-label-" + p[0]).attr("x", cxl).attr("y", by + barH / 2).attr("dy", "0.35em").attr("text-anchor", "middle").text(p[1]);
         acc += p[1];
       });
+      // permanent members: five dots, in the same order and colours as the bar
+      if (d.p5) {
+        var dots = [], k;
+        for (k = 0; k < (d.p5.e || 0); k++) dots.push("e");
+        for (k = 0; k < (d.p5.n || 0); k++) dots.push("n");
+        while (dots.length < 5 - d.p5.d) dots.push("u");
+        for (k = 0; k < d.p5.d; k++) dots.push("d");
+        var dx0 = narrow ? W - 5 * 17 : W - P5W + 18, dy = narrow ? by + barH + 16 : rowH / 2;
+        if (narrow) g.append("text").attr("class", "nine-label").attr("x", 0).attr("y", dy).attr("dy", "0.35em").text("Permanent members");
+        dots.forEach(function (t, j) {
+          g.append("circle").attr("class", "p5-dot p5-" + t).attr("cx", dx0 + j * 17 + 7).attr("cy", dy).attr("r", 6.5)
+            .attr("fill", t === "e" ? "var(--mark)" : t === "n" ? "var(--grid)" : t === "d" ? "var(--series-2)" : "url(#hatch)");
+        });
+      }
       var hit = g.append("rect").attr("class", "hit").attr("x", 0).attr("y", 0).attr("width", W).attr("height", rowH)
         .attr("aria-label", d.c.display_name + ": " + d.e + " encourage" + (d.d != null ? ", " + d.d + " discourage" : "") + (d.n != null ? ", " + d.n + " no opinion" : ""));
       U.bindTip(hit, function () {
         return [
           { text: d.c.display_name, cls: "tt-value", flag: d.c.nationality },
           { text: d.e + " encourage" + (d.d != null ? " \u00b7 " + d.d + " discourage" : "") + (d.n != null ? " \u00b7 " + d.n + " no opinion" : "") },
-          { text: (d.e >= 9 ? "Reached" : "Below") + " the 9 encourage votes needed", cls: "tt-detail" },
+          d.p5 ? { text: "Permanent members: " + [d.p5.e != null ? d.p5.e + " encourage" : null, d.p5.d + " discourage", d.p5.n != null ? d.p5.n + " no opinion" : null].filter(Boolean).join(" \u00b7 ") } : null,
+          { text: (d.e >= 9 ? "Reached" : "Below") + " the 9 encourage votes needed" + (d.p5 && d.p5.d > 0 ? ", but a discourage vote from a permanent member can act as a veto" : ""), cls: "tt-detail" },
           { text: d.c.gender + (d.c.nominated_by ? " \u00b7 nominated by " + d.c.nominated_by : "") + (d.c.status === "Withdrawn" ? " \u00b7 withdrew " + U.fmtDate(U.parseDate(d.c.withdrawal_date)) : ""), cls: "tt-detail" },
           { text: "Source: " + d.src + ". Unofficial.", cls: "tt-detail" }
         ];
@@ -173,6 +193,7 @@
     // the 9-vote marker
     svg.append("line").attr("class", "nine-line").attr("x1", x(9)).attr("x2", x(9)).attr("y1", top - 10).attr("y2", H - 4);
     svg.append("text").attr("class", "nine-label").attr("x", x(9)).attr("y", top - 16).attr("text-anchor", "middle").text("9 needed");
+    if (hasP5 && !narrow) svg.append("text").attr("class", "nine-label").attr("x", W - 8).attr("y", top - 16).attr("text-anchor", "end").text("Permanent members");
   }
 
   /* ---------------------------------------------------------------- main */

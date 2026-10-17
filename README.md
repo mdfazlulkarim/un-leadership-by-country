@@ -6,9 +6,10 @@ A fact series on which countries have held the top leadership positions in the U
 
 | Topic | Page | Status |
 |---|---|---|
-| Secretary-General | [secretary-general/](https://mdfazlulkarim.github.io/un-leadership-by-country/secretary-general/) | Published, data as of 16 October 2026 |
+| Secretary-General | [secretary-general/](https://mdfazlulkarim.github.io/un-leadership-by-country/secretary-general/) | Published, data as of 17 October 2026 |
 | Security Council | [security-council/](https://mdfazlulkarim.github.io/un-leadership-by-country/security-council/) | Published, data as of 16 October 2026 |
-| Heads of UN agencies | | Coming soon |
+| Heads of UN agencies | [un-agencies/](https://mdfazlulkarim.github.io/un-leadership-by-country/un-agencies/) | Published, data as of 17 October 2026 |
+| Heads of Secretariat departments and offices | [un-secretariat/](https://mdfazlulkarim.github.io/un-leadership-by-country/un-secretariat/) | Published, data as of 17 October 2026 |
 
 This is an independent personal project. It is not an official United Nations publication and does not represent the views of the United Nations or any of its entities.
 
@@ -17,6 +18,10 @@ This is an independent personal project. It is not an official United Nations pu
 **Secretary-General:** the 2026 selection first (next step, key dates, candidates ranked by the latest straw poll, and straw poll results over time), then all nine Secretaries-General with profiles and links to their official UN pages, a breakdown by regional group and a regional groups map.
 
 **Security Council:** the 15 seats around the table in 2026 and 2027, the most frequently elected members, the 58 Member States never elected, a world map of elected terms, a country lookup and the full table.
+
+**UN agencies:** the current heads of the 47 entities outside the Secretariat in the UN System Chart (March 2025), grouped as in the chart, with filters by gender, acting status and regional group, a map and charts of the heads' nationalities, and fact cards. Past heads will be added later.
+
+**UN Secretariat:** the same view for the 30 departments and offices of the Secretariat.
 
 ## Repository structure
 
@@ -29,6 +34,9 @@ assets/css/style.css               shared styles (light and dark mode)
 assets/js/common.js                shared helpers: data, flags, tooltips, charts, pop-ups, regional groups map
 assets/js/sg.js                    Secretary-General page
 assets/js/sc.js                    Security Council page
+assets/js/heads.js                 UN agencies and UN Secretariat pages
+un-agencies/                       UN agencies page
+un-secretariat/                    UN Secretariat page
 assets/img/                        header background illustrations
 assets/js/site.js                  light and dark theme switch (light by default)
 assets/flags/                      country flags (SVG)
@@ -44,7 +52,8 @@ data/                              the data behind every figure
 | `data/security_council_terms.csv` | elected term (1946 to 2028) | member state, regional group, start and end year, notes on one-year and split terms |
 | `data/secretaries_general.csv` | Secretary-General | country, regional group, start and end dates, notes, official UN page, optional photo with credit and licence |
 | `data/sg_selection_2026.csv` | 2026 candidate | display name, nationality, nominating State, nomination date, status |
-| `data/sg_straw_polls_2026.csv` | candidate in each straw poll | encourage, discourage, no opinion, source (unofficial, as reported by PassBlue and GWL Voices) |
+| `data/sg_straw_polls_2026.csv` | candidate in each straw poll | encourage, discourage, no opinion, the permanent members' split where reported (from the sixth poll), source (unofficial, as reported by PassBlue, GWL Voices and La Nación) |
+| `data/un_entity_heads.csv` | UN entity or Secretariat office | page, acronym, name, group, head, title, nationality, regional group, gender, year in post, acting, official website, source |
 | `data/sg_selection_dates.csv` | key date | event, status (done, next, upcoming), notes |
 | `data/meta.json` | | as-of date |
 
