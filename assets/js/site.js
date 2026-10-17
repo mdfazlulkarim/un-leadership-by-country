@@ -15,7 +15,18 @@
       if (t) t.textContent = dark ? "Dark" : "Light";
     });
   }
+  // Open the collapsed sources panel when someone follows a link to it.
+  function openSources() {
+    if (location.hash !== "#sources") return;
+    var d = document.getElementById("sources-body");
+    if (d && !d.open) d.open = true;
+  }
+  window.addEventListener("hashchange", openSources);
   document.addEventListener("DOMContentLoaded", function () {
+    openSources();
+    document.querySelectorAll('a[href="#sources"]').forEach(function (a) {
+      a.addEventListener("click", function () { var d = document.getElementById("sources-body"); if (d) d.open = true; });
+    });
     apply(current());
     document.querySelectorAll(".theme-toggle").forEach(function (b) {
       b.addEventListener("click", function () { apply(current() === "dark" ? "light" : "dark"); });

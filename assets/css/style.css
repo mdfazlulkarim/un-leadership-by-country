@@ -107,8 +107,8 @@ img, svg { max-width: 100%; }
 /* ---------------------------------------------------------------- hero */
 .hero { padding: 56px 0 32px; }
 .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--link); margin: 0 0 10px; }
-h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 16px; max-width: 20ch; }
-.dek { font-size: clamp(18px, 2.2vw, 21px); color: var(--text-secondary); max-width: 62ch; margin: 0 0 18px; }
+h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 16px; }
+.dek { font-size: clamp(18px, 2.2vw, 21px); color: var(--text-secondary); margin: 0 0 18px; }
 .asof { font-size: 14px; color: var(--text-muted); margin: 0; }
 .asof strong { color: var(--text-secondary); font-weight: 600; }
 
@@ -127,7 +127,7 @@ section.block { padding: 40px 0 8px; }
 .section-head .eyebrow { margin-bottom: 6px; }
 h2 { font-size: clamp(26px, 3.4vw, 34px); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 10px; }
 h3 { font-size: 20px; line-height: 1.25; margin: 0 0 6px; letter-spacing: -0.005em; }
-.lede { color: var(--text-secondary); max-width: 70ch; margin: 0; }
+.lede { color: var(--text-secondary); margin: 0; }
 p { margin: 0 0 12px; }
 
 .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin: 16px 0; }
@@ -519,3 +519,14 @@ dialog.modal::backdrop { background: rgba(5, 15, 25, 0.55); }
 .site-footer .social a { display: inline-flex; color: var(--text-muted); transition: color 120ms ease; }
 .site-footer .social a:hover, .site-footer .social a:focus-visible { color: var(--link); }
 .site-footer .social svg { width: 18px; height: 18px; display: block; }
+
+/* collapsible sources */
+.src-details > summary { list-style: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--baseline); border-radius: 999px; padding: 7px 16px; font-size: 15px; background: var(--surface-1); }
+.src-details > summary::-webkit-details-marker { display: none; }
+.src-details > summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform 150ms ease; }
+.src-details[open] > summary::before { transform: rotate(45deg); }
+.src-details > summary:hover { border-color: var(--link); }
+.src-details[open] > summary { margin-bottom: 16px; }
+.src-details .when-open { display: none; }
+.src-details[open] .when-open { display: inline; }
+.src-details[open] .when-closed { display: none; }
