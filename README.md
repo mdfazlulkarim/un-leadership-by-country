@@ -70,7 +70,7 @@ The page reads these files directly, so editing a CSV on GitHub updates the site
 ## Sources
 
 - United Nations Security Council: [Countries Elected Members](https://main.un.org/securitycouncil/en/content/countries-elected-members), [Countries Never Elected Members](https://main.un.org/securitycouncil/en/content/countries-never-elected-members-security-council), [Current Members](https://main.un.org/securitycouncil/en/content/current-members)
-- United Nations: [Former Secretaries-General](https://www.un.org/sg/en/content/former-secretaries-general); Dag Hammarskjöld Library: [Who is and has been Secretary-General?](https://ask.un.org/faq/14625)
+- United Nations: official biographies of each former Secretary-General (for example [Trygve Lie](https://www.un.org/sg/en/former-sg/trygve-lie)); Dag Hammarskjöld Library: [Who is and has been Secretary-General?](https://ask.un.org/faq/14625)
 - [Charter of the United Nations](https://www.un.org/en/about-us/un-charter/full-text), Articles 23 and 97
 - Security Council Report: [Sixth Security Council Straw Poll on UN Secretary-General Candidates](https://www.securitycouncilreport.org/whatsinblue/2026/10/sixth-security-council-straw-poll-on-un-secretary-general-candidates.php)
 - Sievers and Daws, [The Procedure of the UN Security Council](https://www.scprocedure.org/chapter-3-section-3k), for regional group totals
