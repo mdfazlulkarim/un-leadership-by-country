@@ -134,7 +134,11 @@
     var unk = rows.length - known;
     document.getElementById("t-women-label").textContent = "are headed by women" + (unk ? " (" + (unk === 1 ? "one head" : unk + " heads") + " not confirmed)" : "");
     document.getElementById("t-top").textContent = nats[top].length;
-    document.getElementById("t-top-label").textContent = "heads are nationals of " + (top === "United States of America" ? "the United States" : short(top)) + ", the most of any country";
+    var tied = Object.keys(nats).filter(function (k) { return nats[k].length === nats[top].length; }).sort();
+    function nm(c) { return c === "United States of America" ? "the United States" : c === "United Kingdom of Great Britain and Northern Ireland" ? "the United Kingdom" : short(c); }
+    var names = tied.map(nm);
+    var list = names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names[0];
+    document.getElementById("t-top-label").textContent = (tied.length > 1 ? "heads each for " + list + ", the most of any country" : "heads are nationals of " + list + ", the most of any country");
   }
 
   /* ---------------------------------------------------------------- map */
