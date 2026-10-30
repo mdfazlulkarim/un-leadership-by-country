@@ -530,3 +530,19 @@ dialog.modal::backdrop { background: rgba(5, 15, 25, 0.55); }
 .src-details .when-open { display: none; }
 .src-details[open] .when-open { display: inline; }
 .src-details[open] .when-closed { display: none; }
+.p5-x { fill: none; stroke: var(--text-muted); stroke-width: 1.5; stroke-dasharray: 2.5 2; }
+
+/* key dates: straw polls and other milestones in different colours */
+:root { --milestone: #7b4fa0; }
+:root[data-theme="dark"] { --milestone: #b28ad6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --milestone: #b28ad6; } }
+.dates li.kind-event .dot { background: var(--milestone); border-color: var(--milestone); }
+.dates-key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; font-size: 13px; color: var(--text-secondary); }
+.dates-key span { display: inline-flex; align-items: center; gap: 6px; }
+.dates-key i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; box-sizing: border-box; }
+.dates-key .k-poll { background: var(--mark); }
+.dates-key .k-event { background: var(--milestone); }
+.dates-key .k-next { border: 3px solid var(--alert); }
+.dates-key .k-up { border: 2px solid var(--baseline); }
+.cc-note { margin: 0 0 10px; padding: 9px 12px; border-left: 4px solid var(--milestone); background: var(--surface-2, var(--chip-bg)); border-radius: 6px; font-size: 14px; color: var(--text-primary); }
+.straw-legend [hidden] { display: none; }

@@ -111,19 +111,27 @@
       b.addEventListener("click", function () { strawState.poll = n; strawBars(cands, polls); });
       bar.appendChild(b);
     });
-    document.getElementById("straw-caption").textContent = "Straw poll " + strawState.poll + " of " + pollNums.length + ", held on " + U.fmtDate(pollDate[strawState.poll]) + ".";
+    var pollRows = polls.filter(function (p) { return +p.poll === strawState.poll; });
+    var cc = pollRows.length ? pollRows[0].colour_coded : "";
+    var cnote = document.getElementById("straw-cc-note");
+    cnote.hidden = cc !== "no";
+    if (cc === "no") cnote.innerHTML = "<strong>Not colour-coded.</strong> Straw poll " + strawState.poll + " used ordinary ballots, so it is not known how the five permanent members voted, or whether any discourage vote came from one of them.";
+    document.getElementById("straw-caption").textContent = "Straw poll " + strawState.poll + " of " + pollNums.length + ", held on " + U.fmtDate(pollDate[strawState.poll]) + "." +
+      (cc === "no" ? "" : cc === "yes" ? " Ballots were colour-coded, so the dots show how the five permanent members voted." : "");
 
     var rows = cands.map(function (c) {
       var r = polls.filter(function (p) { return +p.poll === strawState.poll && p.candidate === c.display_name; })[0];
       if (!r) return null;
       function num(v) { return v != null && v !== "" ? +v : null; }
       return { c: c, e: +r.encourage, n: num(r.no_opinion), d: num(r.discourage), src: r.source,
-        p5: num(r.p5_discourage) == null ? null : { e: num(r.p5_encourage), d: num(r.p5_discourage), n: num(r.p5_no_opinion) } };
+        p5: num(r.p5_discourage) == null ? null : { e: num(r.p5_encourage), d: num(r.p5_discourage), n: num(r.p5_no_opinion) },
+        uncoded: r.colour_coded === "no" };
     }).filter(Boolean).sort(function (a, b) { return b.e - a.e || (a.d == null ? 99 : a.d) - (b.d == null ? 99 : b.d) || a.c.display_name.localeCompare(b.c.display_name); });
 
     var node = document.getElementById("straw-chart");
     node.replaceChildren();
     var W = Math.max(300, node.clientWidth), narrow = W < 620;
+    var uncoded = rows.some(function (r) { return r.uncoded; });
     var hasP5 = rows.some(function (r) { return r.p5; });
     var P5W = hasP5 && !narrow ? 112 : 0;
     var L = narrow ? 0 : Math.min(280, W * 0.32), rowH = narrow ? (hasP5 ? 86 : 60) : 42, top = 30, barH = 24;
@@ -183,6 +191,7 @@
         return [
           { text: d.c.display_name, cls: "tt-value", flag: d.c.nationality },
           { text: d.e + " encourage" + (d.d != null ? " \u00b7 " + d.d + " discourage" : "") + (d.n != null ? " \u00b7 " + d.n + " no opinion" : "") },
+          d.uncoded && !d.p5 ? { text: "Permanent members: not known (ballots not colour-coded)" } : null,
           d.p5 ? { text: "Permanent members: " + [d.p5.e != null ? d.p5.e + " encourage" : null, d.p5.d + " discourage", d.p5.n != null ? d.p5.n + " no opinion" : null].filter(Boolean).join(" \u00b7 ") } : null,
           { text: (d.e >= 9 ? "Reached" : "Below") + " the 9 encourage votes needed" + (d.p5 && d.p5.d > 0 ? ", but a discourage vote from a permanent member can act as a veto" : ""), cls: "tt-detail" },
           { text: d.c.gender + (d.c.nominated_by ? " \u00b7 nominated by " + d.c.nominated_by : "") + (d.c.status === "Withdrawn" ? " \u00b7 withdrew " + U.fmtDate(U.parseDate(d.c.withdrawal_date)) : ""), cls: "tt-detail" },
@@ -229,7 +238,7 @@
     /* -- dates strip */
     var ol = document.getElementById("sel-dates");
     dates.forEach(function (d) {
-      var li = el("li", { "class": d.status });
+      var li = el("li", { "class": d.status + (d.status === "done" ? (/straw poll/i.test(d.event) ? " kind-poll" : " kind-event") : "") });
       li.appendChild(el("span", { "class": "dot", "aria-hidden": "true" }));
       li.appendChild(el("span", { "class": "d" }, d.date ? U.fmtShort(U.parseDate(d.date)) + (d.date.slice(0, 4) !== "2026" ? " " + d.date.slice(0, 4) : "") : "Date not set"));
       li.appendChild(document.createTextNode(d.event));
