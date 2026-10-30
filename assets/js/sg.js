@@ -155,7 +155,7 @@
       g.append("text").attr("class", "gender-glyph " + (d.c.gender === "Woman" ? "is-woman" : "is-man")).attr("x", 25).attr("y", ly).attr("dy", "0.36em")
         .text(U.GENDER_GLYPH[d.c.gender] || "").append("title").text(d.c.gender);
       g.append("text").attr("class", "straw-name").attr("x", 50).attr("y", ly).attr("dy", "0.35em")
-        .text(d.c.display_name + (d.c.status === "Withdrawn" ? " (withdrew later)" : ""));
+        .text(d.c.display_name + (d.c.status === "Withdrawn" ? " (withdrew)" : ""));
       // segments: encourage | no opinion | not reported | discourage
       var parts = [["e", d.e, "var(--mark)"]];
       if (d.n != null) parts.push(["n", d.n, "var(--grid)"]);
